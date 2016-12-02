@@ -22,8 +22,8 @@ class ApiPresenter extends Nette\Application\UI\Presenter
     public $tmp;
     /** @persistent */
     public $vum;
-    /** @persistent */
-    public $l;
+    ///** @persistent */
+    //public $l;
     /** @persistent */
     public $ziskat;
 
@@ -34,14 +34,14 @@ class ApiPresenter extends Nette\Application\UI\Presenter
         $this->database = $db;
     }
 
-    public function renderDefault($key = NULL, $sid = NULL, $tmp = NULL, $vum = NULL, $l = NULL, $ziskat)
+    public function renderDefault($key = NULL, $sid = NULL, $tmp = NULL, $vum = NULL, /*$l = NULL,*/ $ziskat)
     {
         // Přiřazení proměnných
         $this->template->key = $key;
         $this->template->sid = $sid;
         $this->template->tmp = $tmp;
         $this->template->vum = $vum;
-        $this->template->l = $l;
+        //$this->template->l = $l;
         $this->template->ziskat = $ziskat;
 
         // Ziskani dat
@@ -68,10 +68,10 @@ class ApiPresenter extends Nette\Application\UI\Presenter
 
     private function pridatZaznam() {
         $data = array(
-            "id_senzoru" => $this->sid,
-            "teplota" => $this->tmp,
-            "vlhkost" => $this->vum,
-            "svitivost" => $this->l
+            "id_senzoru" => (!$this->sid) ? "Neurčeno" : $this->sid,
+            "teplota" => (!$this->tmp) ? "0" : $this->tmp,
+            "vlhkost" => (!$this->vum) ? "0" : $this->vum,
+            //"svitivost" => (!$this->l) ? "0" : $this->l
         );
 
         $this->database->table("hodnoty")->insert($data);
@@ -83,4 +83,3 @@ class ApiPresenter extends Nette\Application\UI\Presenter
         return "Hodnota parametru není číselná!";
     }
 }
-

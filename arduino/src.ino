@@ -4,7 +4,7 @@
 extern uint8_t SmallFont[];
 
 int lastY;
-int temp;
+int lastLight;
 
 UTFT myGLCD(ITDB18SP,6,7,3,4,5);    //TFT display
 /*
@@ -18,7 +18,7 @@ UTFT myGLCD(ITDB18SP,6,7,3,4,5);    //TFT display
  */
 
  /*
-  * 
+  * Light-A1
   * 
   */
 void setup()
@@ -35,14 +35,13 @@ void setup()
     myGLCD.drawLine(80, y, 85, y);
   }
 
-  // I2C Setup
-  Wire.begin();
+  Serial.begin(9600);
 }
 
 void loop()
 {  
   //Temperature
-  temp = (analogRead(A0) * (5000/1024) - 500) / 10 + /* calibration constant */ 2; 
+  int temp = (analogRead(A0) * (5000/1024) - 500) / 10 + /* calibration constant */ 2; 
   int newY = 148-(138/50.0*temp);
 
   myGLCD.print("Temp: ", 1, 1);
@@ -60,12 +59,19 @@ void loop()
   lastY = newY;
 
   //Light
-  Wire.beginTransmission(0b0100011);
-  byte light = Wire.read();
-  Wire.endTransmission();
+  int light = analogRead(A1);
 
-  myGLCD.print("Light: ", 1, 15);
-  myGLCD.print(String(light), 50, 15); 
+  if(light < 600)
+    myGLCD.print("Night", 1, 15);
+  else {
+    if(lastLight < 600) {
+      myGLCD.setColor(0,0,0);
+      myGLCD.fillRect(1, 15, 40, 40);
+      myGLCD.setColor(255,255,255);
+    }
+    myGLCD.print("Day", 1, 15);
+  }
+  lastLight = light;
 
   delay(200);
 }

@@ -103,6 +103,26 @@ for i = 1, 8, 1 do
 end
 
 
+
+
+
+
+
+http.get("http://tymc15.jecool.net/www/api/?key=t4m15&sid=TeplotaPokoj&tmp=27&vum=17")
+print("odeslano")
+
+print(request)
+
+
+
+
+
+
+
+
+
+
+
 print ("Temperature: "..Temperature.."."..TemperatureDec)
 print ("Humidity: "..Humidity.."."..HumidityDec)
 
@@ -112,3 +132,24 @@ end
 
 
 getTemp()
+
+sendData()
+
+
+
+
+
+
+function sendData()
+getTemp()
+-- conection to thingspeak.com
+
+tmr.alarm(2, 2000, 1, function() 
+print("Odesilam na server")
+print("/www/api?key=t4m15&sid=TeplotaPokoj&tmp="..Temperature.."."..TemperatureDec.."&vum="..Humidity.."."..HumidityDec.." HTTP/1.1\r\n")
+sendData() 
+
+end)
+end
+
+
