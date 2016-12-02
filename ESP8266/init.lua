@@ -17,7 +17,7 @@ pin = 3
 -- GPIO0 = 3 GPIO2 = 4
 
 Humidity = 0
-HumidityDec=0
+HumidityDec=02,
 Temperature = 0
 TemperatureDec=0
 Checksum = 0
@@ -108,7 +108,7 @@ end
 
 
 
-http.get("http://tymc15.jecool.net/www/api/?key=t4m15&sid=TeplotaPokoj&tmp=27&vum=17")
+http.get("http://tymc15.jecool.net/www/api/?key=t4m15&sid=TeplotaPokoj&tmp="..Temperature.."."..TemperatureDec.."&vum="..Humidity.."."..HumidityDec)
 print("odeslano")
 
 print(request)
@@ -123,7 +123,7 @@ print(request)
 
 
 
-print ("Temperature: "..Temperature.."."..TemperatureDec)
+print ("Temperature: "\)
 print ("Humidity: "..Humidity.."."..HumidityDec)
 
 
@@ -144,7 +144,7 @@ function sendData()
 getTemp()
 -- conection to thingspeak.com
 
-tmr.alarm(2, 2000, 1, function() 
+tmr.alarm(2, 30000, 1, function() 
 print("Odesilam na server")
 print("/www/api?key=t4m15&sid=TeplotaPokoj&tmp="..Temperature.."."..TemperatureDec.."&vum="..Humidity.."."..HumidityDec.." HTTP/1.1\r\n")
 sendData() 

@@ -1,0 +1,52 @@
+
+.home-page .exterior {
+
+    background: red;
+
+}
+.home-page .interior {
+
+  background: #00a7ff;
+
+}
+.home-page .settings {
+
+  background: yellow;
+
+}
+a {
+  cursor: pointer;
+}
+
+.home-page .home-box {
+
+}
+.home-page .home-box {
+  background: #fff;
+  border-radius: 3px;
+  border: #00a7ff 1px solid;
+  color: #00a7ff;
+  box-shadow: 1px 2px 4px rgba(0, 0, 0, .5);
+  padding: 1rem;
+}
+.home-box button {
+  display: table;
+  margin: 0 auto;
+}
+.home-page .home-box .desc {
+  margin-bottom: 1rem;
+}
+@media (max-width: 576px) {
+  .home-page .home-box {
+  }
+}
+@media (max-width: 768px) {
+  .home-page .home-box {
+    margin: 1rem .8rem;
+  }
+}
+@media (min-width: 1024px) {
+  .home-page .home-box {
+    margin: 1rem 0;
+  }
+}

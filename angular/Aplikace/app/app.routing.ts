@@ -4,8 +4,8 @@
 import { NgModule }             from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import {HomeComponent} from "./home.component";
-import {ExterierComponent} from "./exterier.component";
-import {InterierComponent} from "./interier.component";
+import {ExteriorComponent} from "./exterior.component";
+import {InteriorComponent} from "./interior.component";
 import {SettingsComponent} from "./settings.component";
 import {HistoryComponent} from "./history.component";
 
@@ -13,8 +13,8 @@ import {HistoryComponent} from "./history.component";
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'home',  component: HomeComponent},
-  { path: 'exterier', component: ExterierComponent },
-  { path: 'interier', component: InterierComponent },
+  { path: 'exterior', component: ExteriorComponent },
+  { path: 'interior', component: InteriorComponent },
   { path: 'settings', component: SettingsComponent },
   { path: 'history', component: HistoryComponent }
 ];

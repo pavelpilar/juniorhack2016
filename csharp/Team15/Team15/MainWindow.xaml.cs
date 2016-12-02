@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Team15.Model;
 
 namespace Team15
 {
@@ -20,33 +21,36 @@ namespace Team15
     /// </summary>
     public partial class MainWindow : Window
     {
+        Core core;
+
         public MainWindow()
         {
-            
-
+            core = new Core();
             InitializeComponent();
         }
 
         private void FindButton_Click(object sender, RoutedEventArgs e)
         {
-            //najdi možné prvky
-            string[] serialPorts = new string[2] { "2", "3"};
+            string[] serialPorts = core.FindPossibleConections();
             if (serialPorts.Length == 0)
             {
-                //chyba
                 MessageBox.Show("Nenalezeno žádné spojení, zkontrolujte kabely  ", "Chyba", MessageBoxButton.OK);
             }
             else if(serialPorts.Length == 1)
             {
-                //přímá volba
-                //serialPorts[0]
+                core.StartServer(serialPorts[0], "URL(zaim k ničemu)");
+                core.OnDisconnect = () => { OnDisconnestEvent(); };
+                FindButton.Visibility = Visibility.Hidden;
+                MainGrid.Visibility = Visibility.Visible;
+       
             }
             else
             {
-                //výběr kabelu
                 FindGrid.Visibility = Visibility.Hidden;
                 PossibleConnectionsGrid.Visibility = Visibility.Visible;
                 PossibleConestionListBox.ItemsSource = (new List<string>(serialPorts));
+                FindButton.Visibility = Visibility.Hidden;
+                PossibleConnectionsGrid.Visibility = Visibility.Visible;
             }
         }
 
@@ -59,8 +63,11 @@ namespace Team15
             else
             {
                 string s = PossibleConestionListBox.SelectedItem as string;
-                //načtení komunikace
+                core.StartServer(s, "URL(zaim k ničemu)");
+                core.OnDisconnect = () => { OnDisconnestEvent(); };
             }
+            PossibleConnectionsGrid.Visibility = Visibility.Hidden;
+            MainGrid.Visibility = Visibility.Visible;
         }
 
         private void CompleteSettingsButton_Click(object sender, RoutedEventArgs e)
@@ -69,7 +76,12 @@ namespace Team15
             {
                 MessageBox.Show("Zadejte všechny", "Chyba", MessageBoxButton.OK);
             }
-            //uložení do configu
+            //uložení do configu, pošle to datábae
+        }
+
+        public void OnDisconnestEvent()
+        {
+            //to co se stane při odpojení
         }
     }
 }

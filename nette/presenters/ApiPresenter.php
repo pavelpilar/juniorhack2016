@@ -9,50 +9,23 @@
 namespace App\Presenters;
 
 use Nette,
-    Nette\Http\Url;
+    Nette\Http\Url,
+    App\Model\API;
 
 class ApiPresenter extends Nette\Application\UI\Presenter
 {
-    // Parametry v URL
-    /** @persistent */
-    public $key;
-    /** @persistent */
-    public $sid;
-    /** @persistent */
-    public $tmp;
-    /** @persistent */
-    public $vum;
-    ///** @persistent */
-    //public $l;
-    /** @persistent */
-    public $ziskat;
+    private $api;
 
-    private $database;
-
-    public function __construct(Nette\Database\Context $db)
-    {
-        $this->database = $db;
+    public function __construct(Nette\Database\Context $db) {
+        $this->api = new API($db);
     }
 
-    public function renderDefault($key = NULL, $sid = NULL, $tmp = NULL, $vum = NULL, /*$l = NULL,*/ $ziskat)
-    {
-        // Přiřazení proměnných
-        $this->template->key = $key;
-        $this->template->sid = $sid;
-        $this->template->tmp = $tmp;
-        $this->template->vum = $vum;
-        //$this->template->l = $l;
-        $this->template->ziskat = $ziskat;
+    public function renderPridat($key = NULL, $sid = NULL, $tmp = NULL, $vum = NULL) {
+        $this->api->prirazeniParametru($key, $sid, $tmp, $vum);
 
-        // Ziskani dat
-        if ($this->ziskat) {
-            echo $this->ziskatZaznamy($this->ziskat);
-            return;
-        }
-
-        // Přístup povolen, skey zadán a zadán správně
-        if ($this->overitPristup()) {
-            $this->pridatZaznam();
+        // Přístup povolen, key zadán a zadán správně
+        if ($this->api->overitPristup()) {
+            $this->api->pridatZaznam();
         }
         // Nezadán security key, nepovolený přístup
         else {
@@ -60,26 +33,32 @@ class ApiPresenter extends Nette\Application\UI\Presenter
         }
     }
 
-    private function overitPristup() {
-        if ($this->key && $this->key == "t4m15")
-            return true;
-        return false;
+    public function renderReset($key = NULL, $sid = NULL, $tmp = NULL, $vum = NULL) {
+        $this->api->prirazeniParametru($key, $sid, $tmp, $vum);
     }
 
-    private function pridatZaznam() {
-        $data = array(
-            "id_senzoru" => (!$this->sid) ? "Neurčeno" : $this->sid,
-            "teplota" => (!$this->tmp) ? "0" : $this->tmp,
-            "vlhkost" => (!$this->vum) ? "0" : $this->vum,
-            //"svitivost" => (!$this->l) ? "0" : $this->l
-        );
+    public function renderVyber($key = NULL, $sid = NULL, $tmp = NULL, $vum = NULL, $pocet = NULL) {
+        $this->api->prirazeniParametru($key, $sid, $tmp, $vum, $pocet);
 
-        $this->database->table("hodnoty")->insert($data);
+        // Přístup povolen, key zadán a zadán správně
+        if ($this->api->overitPristup()) {
+            echo $this->api->vybratZaznamy();
+        }
+        // Nezadán security key, nepovolený přístup
+        else {
+            echo "Přístup odepřen!";
+        }
     }
 
+    public function renderDefault()
+    {
+        echo "Přístup odepřen!";
+    }
+
+    /*
     private function ziskatZaznamy($pocet) {
         if (is_numeric($pocet))
             return $pocet;
         return "Hodnota parametru není číselná!";
-    }
+    }*/
 }

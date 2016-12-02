@@ -37,7 +37,7 @@ void setup()
   }
 
   //Servo (window) setup
-  servo.attach(D9);
+  servo.attach(9);
   
   Serial.begin(9600);
 }
@@ -77,7 +77,14 @@ void loop()
   }
   lastLight = light;
 
-  servo.write(90);
+  if(Serial.available()) {
+    byte[] bytes = new byte[2];
+    Serial.readBytes(bytes, 2);
+    switch(bytes[0] {
+      
+    }
+  }
+    
 
   delay(200);
 }
