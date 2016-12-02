@@ -30,7 +30,7 @@ namespace Team15
         private void FindButton_Click(object sender, RoutedEventArgs e)
         {
             //najdi možné prvky
-            string[] serialPorts = new string[0];
+            string[] serialPorts = new string[2] { "2", "3"};
             if (serialPorts.Length == 0)
             {
                 //chyba
@@ -58,8 +58,12 @@ namespace Team15
             }
             else
             {
-                //PossibleConestionListBox.SelectedItem as string;
+                string s = PossibleConestionListBox.SelectedItem as string;
             }
         }
+
+
+
+
     }
 }

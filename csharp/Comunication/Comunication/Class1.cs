@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO.Ports;
 using System.IO;
+using System.Net.Http;
 
 namespace Comunication
 {
@@ -116,5 +117,14 @@ namespace Comunication
     public class DatabaseCommunication
     {
         private string IP = "";
+        public List<string> GetData()
+        {
+            return null;
+        }
+        public void UpdateHouseData(string Data)
+        {
+
+        }
+
     }
 }

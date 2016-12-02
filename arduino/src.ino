@@ -2,6 +2,7 @@
 
 extern uint8_t SmallFont[];
 
+int lastY;
 int temp;
 
 UTFT myGLCD(ITDB18SP,6,7,3,4,5);    //TFT display
@@ -20,26 +21,35 @@ void setup()
   myGLCD.InitLCD(PORTRAIT);
   myGLCD.setFont(SmallFont);
   myGLCD.clrScr();
-}
 
-void loop()
-{  
-  temp = (analogRead(A0) * (5000/1024) - 500) / 10 + /* kalibrační konstanta */ 4; 
-  
-  myGLCD.setBackColor(0,0,0);
-  myGLCD.print("Temp: ", 1, 1);
-  myGLCD.print(String(temp), 40, 1);
-
+  //Temperature bar
   for(int i = 0; i < 6; i++) {
     int y = 10 + (138/5) * i;
     myGLCD.print(String((5-i)*10), 65, y - 5);
     myGLCD.drawLine(80, y, 85, y);
   }
+}
 
-  myGLCD.drawRect(90, 10, 110, 148);
-  myGLCD.fillRect(91, 147-(148/50*temp), 109, 147);
+void loop()
+{  
+  temp = (analogRead(A0) * (5000/1024) - 500) / 10 + /* kalibrační konstanta */ 4; 
+  int newY = 147-(148/50*temp);
 
-  delay(100);
+  myGLCD.print("Temp: ", 1, 1);
+  myGLCD.print(String(temp), 40, 1);
+  
+  if(newY < lastY)
+  {
+    myGLCD.setColor(0,0,0);
+    myGLCD.fillRect(90, lastY, 110, newY);
+    myGLCD.setColor(255, 255, 255);
+  } else {
+    myGLCD.drawRect(90, 10, 110, 148);
+    myGLCD.fillRect(91, newY, 109, 147);
+  }
+  
+
+  delay(200);
 }
 
 

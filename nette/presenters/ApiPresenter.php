@@ -9,8 +9,7 @@
 namespace App\Presenters;
 
 use Nette,
-    Nette\Http\Url,
-    Nette\Database\Context;
+    Nette\Http\Url;
 
 class ApiPresenter extends Nette\Application\UI\Presenter
 {
@@ -30,6 +29,11 @@ class ApiPresenter extends Nette\Application\UI\Presenter
 
     private $database;
 
+    public function __construct(Nette\Database\Context $db)
+    {
+        $this->database = $db;
+    }
+
     public function renderDefault($key = NULL, $sid = NULL, $tmp = NULL, $vum = NULL, $l = NULL, $ziskat)
     {
         // Přiřazení proměnných
@@ -39,8 +43,6 @@ class ApiPresenter extends Nette\Application\UI\Presenter
         $this->template->vum = $vum;
         $this->template->l = $l;
         $this->template->ziskat = $ziskat;
-
-        $this->pridatZaznam();
 
         // Ziskani dat
         if ($this->ziskat) {
@@ -65,7 +67,14 @@ class ApiPresenter extends Nette\Application\UI\Presenter
     }
 
     private function pridatZaznam() {
-        $this->db->query("SELECT * FROM hodnoty")->dump();
+        $data = array(
+            "id_senzoru" => $this->sid,
+            "teplota" => $this->tmp,
+            "vlhkost" => $this->vum,
+            "svitivost" => $this->l
+        );
+
+        $this->database->table("hodnoty")->insert($data);
     }
 
     private function ziskatZaznamy($pocet) {
