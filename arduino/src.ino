@@ -1,5 +1,5 @@
 #include <UTFT.h>
-#include <Wire.h>
+#include <Servo.h>
 
 extern uint8_t SmallFont[];
 
@@ -17,9 +17,10 @@ UTFT myGLCD(ITDB18SP,6,7,3,4,5);    //TFT display
  * 
  */
 
+Servo servo;
  /*
   * Light-A1
-  * 
+  * Servo-D9
   */
 void setup()
 {  
@@ -35,6 +36,9 @@ void setup()
     myGLCD.drawLine(80, y, 85, y);
   }
 
+  //Servo (window) setup
+  servo.attach(D9);
+  
   Serial.begin(9600);
 }
 
@@ -72,6 +76,8 @@ void loop()
     myGLCD.print("Day", 1, 15);
   }
   lastLight = light;
+
+  servo.write(90);
 
   delay(200);
 }

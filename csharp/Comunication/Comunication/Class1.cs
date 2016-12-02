@@ -16,7 +16,10 @@ namespace Comunication
 {
     public class SerialConnection
     {
+        public Action Disconected;
+
         private const int Speed = 115200;
+        private byte[] CheckByte = new byte[] { 1 };
         private SerialPort Port;
         private Stream stream;
 
@@ -42,7 +45,7 @@ namespace Comunication
         {
             if (!Port.IsOpen)
             {
-                stream = Port.BaseStream;
+                Port.PortName = PortName;
                 try
                 {
                     Port.Open();
@@ -55,6 +58,7 @@ namespace Comunication
                 {
                     throw e;
                 }
+                stream = Port.BaseStream;
             }
             else
             {
@@ -74,15 +78,15 @@ namespace Comunication
                 switch (Prvek)
                 {
                     case PossibleChanges.Okno:
-                        Buffer[0] = 10;
+                        Buffer[0] = 15;
                         Buffer[1] = Hodnota;
                         break;
                     case PossibleChanges.Topeni:
-                        Buffer[0] = 20;
+                        Buffer[0] = 25;
                         Buffer[1] = Hodnota;
                         break;
                     case PossibleChanges.Ventilace:
-                        Buffer[0] = 30;
+                        Buffer[0] = 35;
                         Buffer[1] = Hodnota;
                         break;
                     case PossibleChanges.Zaluzie:
@@ -94,13 +98,23 @@ namespace Comunication
                 }
                 Buffer[2] = 10;
                 stream.Write(Buffer, 0, Buffer.Length);
+                stream.Flush();
             }
             else
             {
-                if (!Port.IsOpen)
-                    throw new Exception("Arduino není připojeno");
-                else
-                    throw new Exception("Nečekaná chyba");
+                Disconected();
+            }
+        }
+        public void SendCheckByte()
+        {
+            try
+            {
+                stream.Write(CheckByte, 0, 1);
+                stream.Flush();
+            }
+            catch
+            {
+                Disconected();
             }
         }
     }
@@ -120,8 +134,7 @@ namespace Comunication
         }
         public string GetData()
         {
-            List<string> Ret = new List<string>();
-            WebRequest Req = WebRequest.Create(Url);
+            WebRequest Req = WebRequest.Create(Url + GetString);
             WebResponse Res = Req.GetResponse();
             StreamReader SR = new StreamReader(Res.GetResponseStream());
             string Line = SR.ReadLine();
