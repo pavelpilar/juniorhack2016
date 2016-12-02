@@ -9,27 +9,44 @@
 namespace App\Presenters;
 
 use Nette,
-    Nette\Http\Url;
+    Nette\Http\Url,
+    Nette\Database\Context;
 
 class ApiPresenter extends Nette\Application\UI\Presenter
 {
     // Parametry v URL
     /** @persistent */
-    public $skey;
+    public $key;
     /** @persistent */
-    public $id_senzoru;
+    public $sid;
     /** @persistent */
-    public $teplota;
+    public $tmp;
     /** @persistent */
-    public $vlhkost;
+    public $vum;
+    /** @persistent */
+    public $l;
+    /** @persistent */
+    public $ziskat;
 
-    public function renderDefault($skey = NULL, $id_senzoru = NULL, $teplota = NULL, $vlhkost = NULL)
+    private $database;
+
+    public function renderDefault($key = NULL, $sid = NULL, $tmp = NULL, $vum = NULL, $l = NULL, $ziskat)
     {
         // Přiřazení proměnných
-        $this->template->skey = $skey;
-        $this->template->id_senzoru = $id_senzoru;
-        $this->template->teplota = $teplota;
-        $this->template->vlhkost = $vlhkost;
+        $this->template->key = $key;
+        $this->template->sid = $sid;
+        $this->template->tmp = $tmp;
+        $this->template->vum = $vum;
+        $this->template->l = $l;
+        $this->template->ziskat = $ziskat;
+
+        $this->pridatZaznam();
+
+        // Ziskani dat
+        if ($this->ziskat) {
+            echo $this->ziskatZaznamy($this->ziskat);
+            return;
+        }
 
         // Přístup povolen, skey zadán a zadán správně
         if ($this->overitPristup()) {
@@ -42,16 +59,19 @@ class ApiPresenter extends Nette\Application\UI\Presenter
     }
 
     private function overitPristup() {
-        if ($this->skey && $this->skey == "t4m15")
+        if ($this->key && $this->key == "t4m15")
             return true;
         return false;
     }
 
     private function pridatZaznam() {
-        echo $this->skey;
-        echo $this->id_senzoru;
-        echo $this->teplota;
-        echo $this->vlhkost;
+        $this->db->query("SELECT * FROM hodnoty")->dump();
+    }
+
+    private function ziskatZaznamy($pocet) {
+        if (is_numeric($pocet))
+            return $pocet;
+        return "Hodnota parametru není číselná!";
     }
 }
 

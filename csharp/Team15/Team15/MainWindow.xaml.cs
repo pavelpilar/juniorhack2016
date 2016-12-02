@@ -22,7 +22,44 @@ namespace Team15
     {
         public MainWindow()
         {
+            
+
             InitializeComponent();
+        }
+
+        private void FindButton_Click(object sender, RoutedEventArgs e)
+        {
+            //najdi možné prvky
+            string[] serialPorts = new string[0];
+            if (serialPorts.Length == 0)
+            {
+                //chyba
+                MessageBox.Show("Nenalezeno žádné spojení, zkontrolujte kabely  ", "Chyba", MessageBoxButton.OK);
+            }
+            else if(serialPorts.Length == 1)
+            {
+                //přímá volba
+                //serialPorts[0]
+            }
+            else
+            {
+                //výběr kabelu
+                FindGrid.Visibility = Visibility.Hidden;
+                PossibleConnectionsGrid.Visibility = Visibility.Visible;
+                PossibleConestionListBox.ItemsSource = (new List<string>(serialPorts));
+            }
+        }
+
+        private void SelectButton_Click(object sender, RoutedEventArgs e)
+        {
+            if(PossibleConestionListBox.SelectedItem == null)
+            {
+                MessageBox.Show("Vyberte sériový port", "Chyba", MessageBoxButton.OK);
+            }
+            else
+            {
+                //PossibleConestionListBox.SelectedItem as string;
+            }
         }
     }
 }
