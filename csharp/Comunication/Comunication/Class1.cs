@@ -9,7 +9,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO.Ports;
 using System.IO;
-using System.Net.Http;
+using System.Net;
+using System.Xml.Serialization;
 
 namespace Comunication
 {
@@ -21,11 +22,10 @@ namespace Comunication
 
         public enum PossibleChanges
         {
-            OknoPrvniPatro,
-            OknoDruhyPatro,
-            OknoStrecha,
-            Termostat,
-            Klimatizace
+            Okno,
+            Ventilace,
+            Topeni,
+            Zaluzie
         }
 
         public SerialConnection()
@@ -121,10 +121,20 @@ namespace Comunication
         {
             return null;
         }
-        public void UpdateHouseData(string Data)
+        public void UpdateHouseData(string Prvek, int Hodnota)
         {
-
+            WebRequest Req = WebRequest.Create("http://localhost/?5");
         }
-
+    }
+    public static class HouseSettings<T>
+    {
+        private static string Path = Environment.ExpandEnvironmentVariables("%appdata%/Team15/Config.Bin");
+        private static XmlSerializer Serializer = new XmlSerializer(typeof(T));
+        public static T LoadSettings()
+        {
+            if (!File.Exists(Path))
+                throw new Exception("Soubor s nastavením nebyl nalezen");
+            object o = Serializer.Deserialize(new FileStream(Path, FileMode.Open));
+        }
     }
 }

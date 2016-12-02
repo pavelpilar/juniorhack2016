@@ -15,6 +15,11 @@ UTFT myGLCD(ITDB18SP,6,7,3,4,5);    //TFT display
  * CS-D3
  * 
  */
+
+ /*
+  * 
+  * 
+  */
 void setup()
 {  
   // LCD Setup
@@ -32,8 +37,8 @@ void setup()
 
 void loop()
 {  
-  temp = (analogRead(A0) * (5000/1024) - 500) / 10 + /* kalibrační konstanta */ 4; 
-  int newY = 147-(148/50*temp);
+  temp = (analogRead(A0) * (5000/1024) - 500) / 10 + /* calibration constant */ 2; 
+  int newY = 148-(138/50.0*temp);
 
   myGLCD.print("Temp: ", 1, 1);
   myGLCD.print(String(temp), 40, 1);
@@ -41,12 +46,13 @@ void loop()
   if(newY < lastY)
   {
     myGLCD.setColor(0,0,0);
-    myGLCD.fillRect(90, lastY, 110, newY);
+    myGLCD.fillRect(91, lastY-15, 109, newY);
     myGLCD.setColor(255, 255, 255);
   } else {
-    myGLCD.drawRect(90, 10, 110, 148);
+    myGLCD.drawRect(90, 10, 110, 148);  
     myGLCD.fillRect(91, newY, 109, 147);
   }
+  lastY = newY;
   
 
   delay(200);
