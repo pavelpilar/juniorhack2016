@@ -1,9 +1,9 @@
 parameters:
 
 database:
-	dsn: 'mysql:host=127.0.0.1;dbname=chytradomacnost'
-	user: root
-	password:
+    dsn: 'mysql:host=localhost;dbname=chytradomacnost'
+    user: tymc15jecoolnet
+    password: hackathon16
 
 
 application:
