@@ -70,39 +70,29 @@ namespace Comunication
         {
             if (stream.CanWrite)
             {
-                byte[] Buffer = null;
+                byte[] Buffer = new byte[3];
                 switch (Prvek)
                 {
-                    case PossibleChanges.OknoPrvniPatro:
-                        Buffer = new byte[4];
-                        Buffer[1] = 10;
-                        Buffer[2] = Hodnota;
+                    case PossibleChanges.Okno:
+                        Buffer[0] = 10;
+                        Buffer[1] = Hodnota;
                         break;
-                    case PossibleChanges.OknoDruhyPatro:
-                        Buffer = new byte[4];
-                        Buffer[1] = 20;
-                        Buffer[2] = Hodnota;
+                    case PossibleChanges.Topeni:
+                        Buffer[0] = 20;
+                        Buffer[1] = Hodnota;
                         break;
-                    case PossibleChanges.OknoStrecha:
-                        Buffer = new byte[4];
-                        Buffer[1] = 30;
-                        Buffer[2] = Hodnota;
+                    case PossibleChanges.Ventilace:
+                        Buffer[0] = 30;
+                        Buffer[1] = Hodnota;
                         break;
-                    case PossibleChanges.Termostat:
-                        Buffer = new byte[4];
-                        Buffer[1] = 100;
-                        Buffer[2] = Hodnota;
-                        break;
-                    case PossibleChanges.Klimatizace:
-                        Buffer = new byte[4];
-                        Buffer[1] = 110;
-                        Buffer[2] = Hodnota;
+                    case PossibleChanges.Zaluzie:
+                        Buffer[0] = 100;
+                        Buffer[1] = Hodnota;
                         break;
                     default:
                         break;
                 }
-                Buffer[0] = 24;
-                Buffer[3] = 255;
+                Buffer[2] = 10;
                 stream.Write(Buffer, 0, Buffer.Length);
             }
             else
@@ -116,25 +106,64 @@ namespace Comunication
     }
     public class DatabaseCommunication
     {
-        private string IP = "";
-        public List<string> GetData()
+        private string Url;
+        private string GetString;
+        private string SetStringType;
+        private string SetStringValue;
+
+        public DatabaseCommunication()
         {
-            return null;
+            Url = "http://tymc15.jecool.net/www/api/";
+            GetString = "?ziskat=5";
+            SetStringType = "";
+            SetStringValue = "";
+        }
+        public string GetData()
+        {
+            List<string> Ret = new List<string>();
+            WebRequest Req = WebRequest.Create(Url);
+            WebResponse Res = Req.GetResponse();
+            StreamReader SR = new StreamReader(Res.GetResponseStream());
+            string Line = SR.ReadLine();
+            SR.Close();
+            for (int i = 0; i < Line.Length - 1; i++)
+            {
+                if (Line[i] == '<' && Line[i + 1] == '!')
+                {
+                    return Line.Remove(i, Line.Length - i);
+                }
+            }
+            return Line;
         }
         public void UpdateHouseData(string Prvek, int Hodnota)
         {
-            WebRequest Req = WebRequest.Create("http://localhost/?5");
+            WebRequest Req = WebRequest.Create(Url + SetStringType + Prvek + SetStringValue + Hodnota);
         }
     }
-    public static class HouseSettings<T>
+    public class HouseSettings<T>
     {
-        private static string Path = Environment.ExpandEnvironmentVariables("%appdata%/Team15/Config.Bin");
-        private static XmlSerializer Serializer = new XmlSerializer(typeof(T));
-        public static T LoadSettings()
+        private string Path;
+        private XmlSerializer Serializer;
+        public HouseSettings()
+        {
+            Path = Environment.ExpandEnvironmentVariables("%appdata%/Team15/Config.Bin");
+            Serializer = new XmlSerializer(typeof(T));
+        }
+        public T LoadSettings()
         {
             if (!File.Exists(Path))
                 throw new Exception("Soubor s nastavením nebyl nalezen");
-            object o = Serializer.Deserialize(new FileStream(Path, FileMode.Open));
+            using (FileStream FS = new FileStream(Path, FileMode.Open))
+            {
+                return (T)Serializer.Deserialize(FS);
+            }
+        }
+        public void SaveSetting(T ob)
+        {
+            using (FileStream FS = new FileStream(Path, FileMode.OpenOrCreate))
+            {
+                Serializer.Serialize(FS, ob);
+            }
         }
     }
 }

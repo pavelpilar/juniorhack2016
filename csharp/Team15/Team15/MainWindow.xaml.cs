@@ -59,11 +59,17 @@ namespace Team15
             else
             {
                 string s = PossibleConestionListBox.SelectedItem as string;
+                //načtení komunikace
             }
         }
 
-
-
-
+        private void CompleteSettingsButton_Click(object sender, RoutedEventArgs e)
+        {
+            if(HeatingTextBlock.Text == "" || JalousieTextBlock.Text == "" || AirConditioningTextBlock.Text == "" || WindowsTextBlock.Text == "")
+            {
+                MessageBox.Show("Zadejte všechny", "Chyba", MessageBoxButton.OK);
+            }
+            //uložení do configu
+        }
     }
 }

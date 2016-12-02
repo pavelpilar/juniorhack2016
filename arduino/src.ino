@@ -1,4 +1,5 @@
 #include <UTFT.h>
+#include <Wire.h>
 
 extern uint8_t SmallFont[];
 
@@ -33,10 +34,14 @@ void setup()
     myGLCD.print(String((5-i)*10), 65, y - 5);
     myGLCD.drawLine(80, y, 85, y);
   }
+
+  // I2C Setup
+  Wire.begin();
 }
 
 void loop()
 {  
+  //Temperature
   temp = (analogRead(A0) * (5000/1024) - 500) / 10 + /* calibration constant */ 2; 
   int newY = 148-(138/50.0*temp);
 
@@ -53,7 +58,14 @@ void loop()
     myGLCD.fillRect(91, newY, 109, 147);
   }
   lastY = newY;
-  
+
+  //Light
+  Wire.beginTransmission(0b0100011);
+  byte light = Wire.read();
+  Wire.endTransmission();
+
+  myGLCD.print("Light: ", 1, 15);
+  myGLCD.print(String(light), 50, 15); 
 
   delay(200);
 }
