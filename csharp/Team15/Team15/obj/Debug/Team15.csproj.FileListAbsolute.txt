@@ -15,3 +15,16 @@ C:\Users\Pavel\Desktop\Team15\Team15\obj\Debug\Team15.pdb
 C:\Users\Michal\Documents\Visual Studio 2015\Projects\Team15\Team15\bin\Debug\Team15.exe.config
 C:\Users\Michal\Documents\Visual Studio 2015\Projects\Team15\Team15\obj\Debug\Team15.exe
 C:\Users\Michal\Documents\Visual Studio 2015\Projects\Team15\Team15\obj\Debug\Team15.pdb
+C:\Users\Michal\Documents\Visual Studio 2015\Projects\Team15\Team15\bin\Debug\Team15.exe
+C:\Users\Michal\Documents\Visual Studio 2015\Projects\Team15\Team15\bin\Debug\Team15.pdb
+C:\Users\Michal\Documents\Visual Studio 2015\Projects\Team15\Team15\bin\Debug\Comunication.dll
+C:\Users\Michal\Documents\Visual Studio 2015\Projects\Team15\Team15\bin\Debug\Comunication.pdb
+C:\Users\Michal\Documents\Visual Studio 2015\Projects\Team15\Team15\obj\Debug\Team15.csprojResolveAssemblyReference.cache
+C:\Users\Michal\Documents\Visual Studio 2015\Projects\Team15\Team15\obj\Debug\MainWindow.g.cs
+C:\Users\Michal\Documents\Visual Studio 2015\Projects\Team15\Team15\obj\Debug\App.g.cs
+C:\Users\Michal\Documents\Visual Studio 2015\Projects\Team15\Team15\obj\Debug\Team15_MarkupCompile.cache
+C:\Users\Michal\Documents\Visual Studio 2015\Projects\Team15\Team15\obj\Debug\Team15_MarkupCompile.lref
+C:\Users\Michal\Documents\Visual Studio 2015\Projects\Team15\Team15\obj\Debug\MainWindow.baml
+C:\Users\Michal\Documents\Visual Studio 2015\Projects\Team15\Team15\obj\Debug\Team15.g.resources
+C:\Users\Michal\Documents\Visual Studio 2015\Projects\Team15\Team15\obj\Debug\Team15.Properties.Resources.resources
+C:\Users\Michal\Documents\Visual Studio 2015\Projects\Team15\Team15\obj\Debug\Team15.csproj.GenerateResource.Cache

@@ -61,24 +61,20 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" TextWrapping="Wrap" Text="Teplota zapnutí topení" FontSize="20" Width="250"/>
-                    <TextBox x:Name="HeatingTextBlock" Width="40" VerticalAlignment="Center"/>
+                    <TextBlock VerticalAlignment="Center" TextWrapping="Wrap" Text="Teplota max" FontSize="20" Width="250"/>
+                    <TextBox x:Name="TemperatureMaxTextBlock" Width="40" VerticalAlignment="Center"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Grid.Row="1">
-                    <TextBlock VerticalAlignment="Center" TextWrapping="Wrap" Text="Teplota zapnutí klimatizace:" FontSize="20" Width="250"/>
-                    <TextBox x:Name="AirConditioningTextBlock" Width="40" VerticalAlignment="Center"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" Grid.Row="1">
-                    <TextBlock VerticalAlignment="Center" TextWrapping="Wrap" Text="Teplota zapnutí klimatizace:" FontSize="20" Width="250"/>
-                    <TextBox x:Name="Windows" Width="40" VerticalAlignment="Center"/>
+                    <TextBlock VerticalAlignment="Center" TextWrapping="Wrap" Text="Teplota low" FontSize="20" Width="250"/>
+                    <TextBox x:Name="TemperatureMinTextBlock" Width="40" VerticalAlignment="Center"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Grid.Row="2">
-                    <TextBlock VerticalAlignment="Center" TextWrapping="Wrap" Text="Vlhkost otevření oken:" FontSize="20" Width="250"/>
-                    <TextBox x:Name="WindowsTextBlock" Width="40" VerticalAlignment="Center"/>
+                    <TextBlock VerticalAlignment="Center" TextWrapping="Wrap" Text="vlhkost max" FontSize="20" Width="250"/>
+                    <TextBox x:Name="WetnessMaxTextBlock" Width="40" VerticalAlignment="Center"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Grid.Row="3">
-                    <TextBlock VerticalAlignment="Center" TextWrapping="Wrap" Text="Osvětlení zatáhnutí žaluzií:" FontSize="20" Width="250"/>
-                    <TextBox x:Name="JalousieTextBlock" Width="40" VerticalAlignment="Center"/>
+                    <TextBlock VerticalAlignment="Center" TextWrapping="Wrap" Text="Vlhkost min:" FontSize="20" Width="250"/>
+                    <TextBox x:Name="WetnessMinTextBlock" Width="40" VerticalAlignment="Center"/>
                 </StackPanel>
             </Grid>
             <Button x:Name="CompleteSettingsButton" Content="Nastavit" Grid.Column="2" Grid.Row="3" Click="CompleteSettingsButton_Click"/>

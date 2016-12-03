@@ -26,6 +26,7 @@ namespace Team15
         public MainWindow()
         {
             core = new Core();
+
             InitializeComponent();
         }
 
@@ -42,7 +43,6 @@ namespace Team15
                 core.OnDisconnect = () => { OnDisconnestEvent(); };
                 FindButton.Visibility = Visibility.Hidden;
                 MainGrid.Visibility = Visibility.Visible;
-       
             }
             else
             {
@@ -71,12 +71,8 @@ namespace Team15
         }
 
         private void CompleteSettingsButton_Click(object sender, RoutedEventArgs e)
-        {
-            if(HeatingTextBlock.Text == "" || JalousieTextBlock.Text == "" || AirConditioningTextBlock.Text == "" || WindowsTextBlock.Text == "")
-            {
-                MessageBox.Show("Zadejte všechny", "Chyba", MessageBoxButton.OK);
-            }
-            //uložení do configu, pošle to datábae
+        {      
+            core.NewSettings()
         }
 
         public void OnDisconnestEvent()

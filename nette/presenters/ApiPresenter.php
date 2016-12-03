@@ -20,8 +20,8 @@ class ApiPresenter extends Nette\Application\UI\Presenter
         $this->api = new API($db);
     }
 
-    public function renderPridat($key = NULL, $sid = NULL, $tmp = NULL, $vum = NULL) {
-        $this->api->prirazeniParametru($key, $sid, $tmp, $vum);
+    public function renderPridat($key = NULL, $sid = NULL, $tmp = NULL, $vum = NULL, $l = NULL) {
+        $this->api->prirazeniParametru($key, $sid, $tmp, $vum, $l);
 
         // Přístup povolen, key zadán a zadán správně
         if ($this->api->overitPristup()) {
@@ -33,8 +33,8 @@ class ApiPresenter extends Nette\Application\UI\Presenter
         }
     }
 
-    public function renderReset($key = NULL, $sid = NULL, $tmp = NULL, $vum = NULL) {
-        $this->api->prirazeniParametru($key, $sid, $tmp, $vum);
+    public function renderReset($key = NULL, $sid = NULL, $tmp = NULL, $vum = NULL, $l = NULL) {
+        $this->api->prirazeniParametru($key, $sid, $tmp, $vum, $l);
 
         // Přístup povolen, key zadán a zadán správně
         if ($this->api->overitPristup()) {
@@ -46,12 +46,25 @@ class ApiPresenter extends Nette\Application\UI\Presenter
         }
     }
 
-    public function renderVyber($key = NULL, $sid = NULL, $tmp = NULL, $vum = NULL, $pocet = NULL) {
-        $this->api->prirazeniParametru($key, $sid, $tmp, $vum, $pocet);
+    public function renderVyber($key = NULL, $sid = NULL, $tmp = NULL, $vum = NULL, $l = NULL, $pocet = NULL) {
+        $this->api->prirazeniParametru($key, $sid, $tmp, $vum, $l, $pocet);
 
         // Přístup povolen, key zadán a zadán správně
         if ($this->api->overitPristup()) {
             echo $this->api->vybratZaznamy();
+        }
+        // Nezadán security key, nepovolený přístup
+        else {
+            echo "Přístup odepřen!";
+        }
+    }
+
+    public function renderNastaveni($key = NULL, $nid = NULL, $maxtmp = NULL, $mintmp = NULL, $maxvum = NULL, $minvum = NULL, $topeni = NULL, $okna = NULL) {
+        $this->api->prirazeniParametruNastaveni($key, $nid, $maxtmp, $mintmp, $maxvum, $minvum, $topeni, $okna);
+
+        // Přístup povolen, key zadán a zadán správně
+        if ($this->api->overitPristup()) {
+            $this->api->update();
         }
         // Nezadán security key, nepovolený přístup
         else {

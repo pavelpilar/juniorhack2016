@@ -27,8 +27,7 @@ namespace Comunication
         {
             Okno,
             Ventilace,
-            Topeni,
-            Zaluzie
+            Topeni
         }
 
         public SerialConnection()
@@ -75,27 +74,8 @@ namespace Comunication
             if (stream.CanWrite)
             {
                 byte[] Buffer = new byte[2];
-                switch (Prvek)
-                {
-                    case PossibleChanges.Okno:
-                        Buffer[0] = 15;
-                        Buffer[1] = Hodnota;
-                        break;
-                    case PossibleChanges.Topeni:
-                        Buffer[0] = 25;
-                        Buffer[1] = Hodnota;
-                        break;
-                    case PossibleChanges.Ventilace:
-                        Buffer[0] = 35;
-                        Buffer[1] = Hodnota;
-                        break;
-                    case PossibleChanges.Zaluzie:
-                        Buffer[0] = 100;
-                        Buffer[1] = Hodnota;
-                        break;
-                    default:
-                        break;
-                }
+                Buffer[0] = (byte)Prvek;
+                Buffer[1] = Hodnota;
                 stream.Write(Buffer, 0, Buffer.Length);
                 stream.Flush();
             }
@@ -132,16 +112,6 @@ namespace Comunication
         private string GetSettingString;
         private string SetStringType;
         private string SetStringValue;
-
-        public enum SettingParameters
-        {
-            TemperatureMin,
-            TemperatureMax,
-            AirConditionMin,
-            AirConditionMax,
-            Window,
-            Heating
-        }
 
         public DatabaseCommunication()
         {
@@ -183,13 +153,13 @@ namespace Comunication
             SR.Close();
             return Ret;
         }
-        public void UpdateSettings(SettingParameters Parameter, int value)
+        public void UpdateSettings(int TempMin, int TempMax, int WetnMin, int WetnMax, int Windows, int Heating)
         {
-            WebRequest.Create(Url + SetStringType + Parameter + SetStringValue + value);
+            WebRequest.Create(String.Format("{0}/?key={1}&id={2}&temax={3}&temin={4}&wemax={5}&wemin={6}&win={7}&heat={8}", Url, "t4m15", 1, TempMax, TempMin, WetnMax, WetnMin, Windows, Heating));
         }
-        public void UpdateData(byte temperature, byte condiction)
+        public void UpdateData(byte temperature, byte day)
         {
-            string UpdateUrl = String.Format("{0}pridat?key=t4m15&sid={1}&tmp={2}&vum={3}", Url, "TestujemeTO1", temperature, condiction);
+            string UpdateUrl = String.Format("{0}pridat?key=t4m15&sid={1}&tmp={2}&day={3}", Url, "SenzorOut", temperature, day);
         }
     }
 }

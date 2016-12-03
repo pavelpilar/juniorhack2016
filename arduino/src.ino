@@ -25,6 +25,7 @@ Servo servo;
   * Heat-D8
   * Servo-D9
   * Ventilation-D10
+  * Window Button-D13
   */
 void setup()
 {  
@@ -53,6 +54,17 @@ void setup()
 
 void loop()
 {  
+  if(digitalRead(13) == LOW){
+    if(windowState == 0){
+      servo.write(40);
+      windowState = 1;
+    } else {
+      servo.write(80);
+      windowState = 0;
+    }
+  }
+    
+  
   //Temperature
   int temp = (analogRead(A0) * (5000/1024) - 500) / 10 + /* calibration constant */ 2; 
   int newY = 148-(138/50.0*temp);
@@ -63,7 +75,7 @@ void loop()
   if(newY < lastY)
   {
     myGLCD.setColor(0,0,0);
-    myGLCD.fillRect(91, lastY-15, 109, newY);
+    myGLCD.fillRect(91, lastY-40, 109, newY);
     myGLCD.setColor(255, 255, 255);
   } else {
     myGLCD.drawRect(90, 10, 110, 148);  
@@ -120,8 +132,6 @@ void loop()
     }
   } 
 
-  
-
   if(millis() - sendTimer >= 4000) {
     sendTimer = millis();
     Serial.print(0);  //temp
@@ -132,6 +142,7 @@ void loop()
   }
   
   delay(200);
+
 }
 
 

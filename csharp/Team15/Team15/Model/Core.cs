@@ -12,13 +12,16 @@ namespace Team15.Model
     {
         public Settings ActualSettings { get; set; }
         public Action OnDisconnect;
-
+        public byte Temperature { get; private set; }
+        public byte DayTime { get; private set; }
 
         private SerialConnection _serialConnection;
         private DatabaseCommunication _databaseCommunication;
 
         public Core()
         {
+            _serialConnection = new SerialConnection();
+            _databaseCommunication = new DatabaseCommunication();
             SetSettingsFromList(_databaseCommunication.GetSettings());
         }
 
@@ -32,43 +35,58 @@ namespace Team15.Model
             _serialConnection.StartCommunication(port);
             Thread server = new Thread(() =>
             {
-                byte[] updateData = _serialConnection.ReceiveData;
-                ReceivedParameters RP = GetDataFromString(_databaseCommunication.GetData());
-                if (RP.Heat <= ActualSettings.TemperatureMin)
+                for (;;)
                 {
-                    if (!ActualSettings.Heating)
-                        //Teplota moc nízká
-                        _serialConnection.SendCommand(SerialConnection.PossibleChanges.Topeni, 1);
-                }
-                else if (RP.Heat >= ActualSettings.TemperatureMax)
-                {
-                    if (ActualSettings.Heating)
-                        //Teplota moc vysoká
-                        _serialConnection.SendCommand(SerialConnection.PossibleChanges.Topeni, 0);
-                }
-                if (RP.AirConditioning <= ActualSettings.AirConditioningMin)
-                {
-                    if (ActualSettings.Windows)
-                        //Vlhkost vzduchu moc nízká (dlouho otevřené okno)
-                        _serialConnection.SendCommand(SerialConnection.PossibleChanges.Okno, 0);
-                }
-                else if (RP.AirConditioning >= ActualSettings.AirConditioningMax)
-                {
-                    if (!ActualSettings.Windows)
-                        //Vlhkost vzduchu moc vysoká (dlouho zavřené okno)
-                        _serialConnection.SendCommand(SerialConnection.PossibleChanges.Okno, 1);
-                }
-                else
-                {
-                    if (!_serialConnestion.SendCheckByte())
+                    byte[] updateData = _serialConnection.ReceiveData();
+                    if (updateData[0] == 1)
                     {
-                        if(OnDisconnect != null)
+                        Temperature = updateData[1];
+                    }
+                    else if (updateData[0] == 2)
+                    {
+                        DayTime = updateData[2];
+                    }
+                    if (Temperature != 0)
+                    {
+                        _databaseCommunication.UpdateData(Temperature, DayTime);
+                    }
+                    ReceivedParameters RP = GetDataFromString(_databaseCommunication.GetData());
+                    if (RP.Heat <= ActualSettings.TemperatureMin)
+                    {
+                        if (!ActualSettings.Heating)
+                            //Teplota moc nízká
+                            _serialConnection.SendCommand(SerialConnection.PossibleChanges.Topeni, 1);
+                    }
+                    else if (RP.Heat >= ActualSettings.TemperatureMax)
+                    {
+                        if (ActualSettings.Heating)
+                            //Teplota moc vysoká
+                            _serialConnection.SendCommand(SerialConnection.PossibleChanges.Topeni, 0);
+                    }
+                    if (RP.AirConditioning <= ActualSettings.AirConditioningMin)
+                    {
+                        if (ActualSettings.Windows)
+                            //Vlhkost vzduchu moc nízká (dlouho otevřené okno)
+                            _serialConnection.SendCommand(SerialConnection.PossibleChanges.Okno, 0);
+                    }
+                    else if (RP.AirConditioning >= ActualSettings.AirConditioningMax)
+                    {
+                        if (!ActualSettings.Windows)
+                            //Vlhkost vzduchu moc vysoká (dlouho zavřené okno)
+                            _serialConnection.SendCommand(SerialConnection.PossibleChanges.Okno, 1);
+                    }
+                    else
+                    {
+                        if (!_serialConnection.SendCheckByte())
                         {
-                            OnDisconnect();
+                            if (OnDisconnect != null)
+                            {
+                                OnDisconnect();
+                            }
                         }
                     }
+                    Thread.Sleep(1000);
                 }
-                Thread.Sleep(1000);
             });
         }
 
@@ -88,8 +106,10 @@ namespace Team15.Model
 
         private void SetSettingsFromList(List<string> Data)
         {
+            ActualSettings = new Settings(10, 30, 10, 30, false, false);
+            return;
+            Console.WriteLine(Data.Count);
             string[] Split = Data[3].Split('"');
-
             int TemperatureMin = int.Parse(Split[3].Split('.')[0]);
             Split = Data[4].Split('"');
             int TemperatureMax = int.Parse(Split[3].Split('.')[0]);
