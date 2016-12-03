@@ -57,7 +57,17 @@ namespace Team15.Model
                     {
 
                     }
-                    ReceivedParameters RP = GetDataFromString(_databaseCommunication.GetData());
+                    ReceivedParameters RP;
+                    try
+                    {
+                        RP = GetDataFromString(_databaseCommunication.GetData());
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                        Thread.Sleep(1000);
+                        continue;
+                    }
                     if (RP.Heat <= ActualSettings.TemperatureMin)
                     {
                         if (!ActualSettings.Heating)
@@ -92,6 +102,7 @@ namespace Team15.Model
                             }
                         }
                     }
+                    _databaseCommunication.UpdateData(10, 40);
                     Thread.Sleep(1000);
                 }
             });
@@ -106,31 +117,57 @@ namespace Team15.Model
 
         private ReceivedParameters GetDataFromString(List<string> Data)
         {
-            string[] Split = Data[3].Split('"');
+            int pointer = 2;
+            string[] Split = Data[pointer].Split('"');
+            if (Split[3].StartsWith("Teplota"))
+                Split = Data[pointer + 1].Split('"');
+            else
+            {
+                pointer = 8;
+                Split = Data[pointer].Split('"');
+                if (Split[3].StartsWith("Teplota"))
+                    Split = Data[pointer + 1].Split('"');
+                else
+                    throw new Exception("Nenalezeny výsledky z pokoje");
+            }
             int Temperature = int.Parse(Split[3].Split('.')[0]);
-            Split = Data[4].Split('"');
+            Split = Data[pointer + 2].Split('"');
             int Conditioning = int.Parse(Split[3].Split('.')[0]);
             return new ReceivedParameters(Temperature, Conditioning);
         }
 
         private void SetSettingsFromList(List<string> Data)
         {
-            ActualSettings = new Settings(10, 30, 10, 30, false, false);
-            return;
             Console.WriteLine(Data.Count);
-            string[] Split = Data[3].Split('"');
-            int TemperatureMin = int.Parse(Split[3].Split('.')[0]);
-            Split = Data[4].Split('"');
-            int TemperatureMax = int.Parse(Split[3].Split('.')[0]);
-            Split = Data[5].Split('"');
-            int AirConditioningMin = int.Parse(Split[3].Split('.')[0]);
-            Split = Data[6].Split('"');
-            int AirConditioningMax = int.Parse(Split[3].Split('.')[0]);
-            Split = Data[7].Split('"');
-            bool Windows = int.Parse(Split[3].Split('.')[0]) == 1;
-            Split = Data[8].Split('"');
-            bool Heating = int.Parse(Split[3].Split('.')[0]) == 1;
+            string[] Split = Data[2].Split(':');
+            int TemperatureMax = int.Parse(Split[1]);
+            Split = Data[3].Split(':');
+            int TemperatureMin = int.Parse(Split[1]);
+            Split = Data[4].Split(':');
+            int AirConditioningMax = int.Parse(Split[1]);
+            Split = Data[5].Split(':');
+            int AirConditioningMin = int.Parse(Split[1]);
+            Split = Data[6].Split(':');
+            bool Windows = int.Parse(Split[1]) == 1;
+            Split = Data[7].Split(':');
+            bool Heating = int.Parse(Split[1]) == 1;
             ActualSettings = new Settings(TemperatureMin, TemperatureMax, AirConditioningMin, AirConditioningMax, Windows, Heating);
+        }
+        private int FindNumber(string s)
+        {
+            string Number = "";
+            bool Found = false;
+            for (int i = s.Length - 1; i > 0; i--)
+            {
+                if (s[i] > 47 && s[i] < 58)
+                {
+                    Found = true;
+                    Number = s[i] + Number;
+                }
+                else if (Found)
+                    break;
+            }
+            return int.Parse(Number);
         }
     }
 

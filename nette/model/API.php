@@ -81,10 +81,25 @@ class API {
         return $jsonData;
     }
 
+    public function ziskatDataNastaveni() {
+        header("Content-Type: application/json; charset=utf-8");
+        header("Access-Control-Allow-Origin: *");
+        $vratit = $this->database->table("nastaveni")->where(array("id" => $this->nid));
+
+        $result = [];
+        foreach ($vratit as $zaznam){
+            $namereno = array("maximalni_teplota" => $zaznam->maximalni_teplota, "minimalni_teplota" => $zaznam->minimalni_teplota, "maximalni_vlhkost" => $zaznam->maximalni_vlhkost, "minimalni_vlhkost" => $zaznam->minimalni_vlhkost, "otevreni_oken" => $zaznam->otevreni_oken, "zapnuti_topeni" => $zaznam->zapnuti_topeni);
+            array_push($result, $namereno);
+        }
+
+        $jsonData = json_encode($result, JSON_PRETTY_PRINT);
+        return $jsonData;
+    }
+
     public function getOutDevice() {
         header("Content-Type: application/json; charset=utf-8");
         header("Access-Control-Allow-Origin: *");
-        $vratit = $this->database->query("SELECT * FROM hodnoty WHERE id_senzoru = 'output' ORDER BY datum DESC LIMIT 10");
+        $vratit = $this->database->query("SELECT * FROM hodnoty WHERE id_senzoru = 'output' ORDER BY datum DESC LIMIT 1");
 
         $result = [];
         foreach ($vratit as $zaznam){

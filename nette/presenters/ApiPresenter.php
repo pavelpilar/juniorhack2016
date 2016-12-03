@@ -72,8 +72,13 @@ class ApiPresenter extends Nette\Application\UI\Presenter
         }
     }
 
-    public function renderNastaveni($key = NULL, $nid = NULL, $maxtmp = NULL, $mintmp = NULL, $maxvum = NULL, $minvum = NULL, $topeni = NULL, $okna = NULL) {
+    public function renderNastaveni($key = NULL, $nid = NULL, $maxtmp = NULL, $mintmp = NULL, $maxvum = NULL, $minvum = NULL, $topeni = NULL, $okna = NULL, $volba) {
         $this->api->prirazeniParametruNastaveni($key, $nid, $maxtmp, $mintmp, $maxvum, $minvum, $topeni, $okna);
+
+        if ($volba && $volba == 1) {
+            echo $this->api->ziskatDataNastaveni();
+            return;
+        }
 
         // Přístup povolen, key zadán a zadán správně
         if ($this->api->overitPristup()) {
