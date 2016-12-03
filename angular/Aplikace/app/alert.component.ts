@@ -5,7 +5,9 @@ import {Input, Component, OnInit, OnChanges} from '@angular/core';
   template: `<p *ngFor="let alert of alerts">
                 <ngb-alert [type]="alert.type" (close)="closeAlert(alert)">{{ alert.message }}</ngb-alert>
             </p>
-            `
+            `,
+  styles: [`.alert-danger{display: none;}
+.alert-danger:first-of-type{display:block}`],
 })
 export class NgbdAlertCloseable {
 

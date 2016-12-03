@@ -14,7 +14,6 @@ import {Device} from "./model/Device";
     <navbar></navbar>
     <router-outlet></router-outlet>
     <ngbd-alert-closeable [alerts]="alerts"></ngbd-alert-closeable>
-    <button class="btn btn-primary" (click)="AddAlert()">Test</button>
     `,
 })
 export class AppComponent {

@@ -1,4 +1,5 @@
 <div class="home-page row">
+  <ngbd-alert-closeable [alerts]="alerts"></ngbd-alert-closeable>
   <div class="col-md-4 col-sm-12">
     <div class="home-box">
       <div *ngFor="let device of interior" class="desc">
@@ -34,5 +35,6 @@
         <div>Turn on heating: {{sett.zapnuti_topeni}} </div>
       </div>
   </div>
+</div>
 </div>
 

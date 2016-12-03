@@ -8,6 +8,7 @@ import {Http, Response} from "@angular/http";
 import { Observable }     from 'rxjs/Observable';
 import {Device} from "./model/Device";
 import {Settings} from "./model/Settings";
+import {Security} from "./model/Security";
 @Injectable()
 
 export class DataService {
@@ -43,9 +44,15 @@ export class DataService {
 
   }
 
+  getSecurity(): Observable<Security[]>{
+    this.deviceUrl ='http://tymc15.jecool.net/www/api/magnet?sec=2';
+    return this.http.get(this.deviceUrl)
+      .map(this.extractData)
+      .catch(this.handleError);
+  }
+
   private extractData(res: Response) {
     let body = res.json();
-    console.log(body);
     return body;
   }
 

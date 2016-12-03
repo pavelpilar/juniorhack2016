@@ -36,6 +36,9 @@ namespace Team15.Model
             _serialConnection.SendCommand(SerialConnection.PossibleChanges.Topeni, 0x30);
             _serialConnection.SendCommand(SerialConnection.PossibleChanges.Okno, 0x30);
             _serialConnection.SendCommand(SerialConnection.PossibleChanges.Ventilace, 0x30);
+            ActualSettings.Heating = false;
+            ActualSettings.Windows = false;
+            ActualSettings.Venting = false;
             Thread server = new Thread(() =>
             {
                 for (;;)
@@ -59,21 +62,22 @@ namespace Team15.Model
                     catch
                     {
                         Thread.Sleep(1000);
+                        //Console.WriteLine("Skipping");
                         continue;
                     }
                     if (RP == null)
                     {
                         Thread.Sleep(1000);
+                        //Console.WriteLine("Skipping");
                         continue;
                     }
                     if (RP.Heat <= ActualSettings.TemperatureMin)
                     {
-                        Console.WriteLine(ActualSettings.Heating);
                         if (!ActualSettings.Heating)
                         {
-                            Console.WriteLine("Too cold: " + RP.Heat);
                             //Teplota moc nízká
                             ActualSettings.Heating = true;
+                            _serialConnection.SendCommand(SerialConnection.PossibleChanges.Topeni, 0x31);
                             _serialConnection.SendCommand(SerialConnection.PossibleChanges.Topeni, 0x31);
                             if (ActualSettings.Windows)
                             {
@@ -85,14 +89,13 @@ namespace Team15.Model
                             SendChange();
                         }
                     }
-                    else if (RP.Heat >= ActualSettings.TemperatureMax)
+                    if (RP.Heat >= ActualSettings.TemperatureMax)
                     {
-                        Console.WriteLine(ActualSettings.Heating);
                         if (ActualSettings.Heating)
                         {
                             //Teplota moc vysoká
-                            Console.WriteLine("Too hot: " + RP.Heat);
                             ActualSettings.Heating = false;
+                            _serialConnection.SendCommand(SerialConnection.PossibleChanges.Topeni, 0x30);
                             _serialConnection.SendCommand(SerialConnection.PossibleChanges.Topeni, 0x30);
                             if (ActualSettings.Venting)
                             {
@@ -106,7 +109,6 @@ namespace Team15.Model
                     }
                     if (RP.AirConditioning <= ActualSettings.AirConditioningMin)
                     {
-                        Console.WriteLine("Too dry: " + RP.AirConditioning);
                         if (ActualSettings.Windows)
                         {
                             //Vlhkost vzduchu moc nízká (dlouho otevřené okno)
@@ -121,9 +123,8 @@ namespace Team15.Model
                             SendChange();
                         }
                     }
-                    else if (RP.AirConditioning >= ActualSettings.AirConditioningMax)
+                    if (RP.AirConditioning >= ActualSettings.AirConditioningMax)
                     {
-                        Console.WriteLine("Too wet: " + RP.AirConditioning);
                         if (!ActualSettings.Windows && !ActualSettings.Heating)
                         {
                             //Vlhkost vzduchu moc vysoká (dlouho zavřené okno)
@@ -131,21 +132,11 @@ namespace Team15.Model
                             _serialConnection.SendCommand(SerialConnection.PossibleChanges.Okno, 0x31);
                             SendChange();
                         }
-                        else if (!ActualSettings.Venting)
+                        else if (!ActualSettings.Windows && !ActualSettings.Venting)
                         {
                             ActualSettings.Venting = true;
                             _serialConnection.SendCommand(SerialConnection.PossibleChanges.Ventilace, 0x31);
                             SendChange();
-                        }
-                    }
-                    else
-                    {
-                        if (!_serialConnection.SendCheckByte())
-                        {
-                            if (OnDisconnect != null)
-                            {
-                                OnDisconnect();
-                            }
                         }
                     }
                     Thread.Sleep(1000);
@@ -165,6 +156,33 @@ namespace Team15.Model
             _databaseCommunication.UpdateSettings(ActualSettings.TemperatureMin, ActualSettings.TemperatureMax, ActualSettings.AirConditioningMin, ActualSettings.AirConditioningMax, ActualSettings.Windows ? 1 : 0, ActualSettings.Heating ? 1 : 0);
         }
 
+        public void ChangeHeat()
+        {
+            ActualSettings.Heating = !ActualSettings.Heating;
+            if (ActualSettings.Heating)
+                _serialConnection.SendCommand(SerialConnection.PossibleChanges.Topeni, 0x31);
+            else
+                _serialConnection.SendCommand(SerialConnection.PossibleChanges.Topeni, 0x30);
+            SendChange();
+        }
+        public void ChangeWindow()
+        {
+            ActualSettings.Windows = !ActualSettings.Windows;
+            if (ActualSettings.Windows)
+                _serialConnection.SendCommand(SerialConnection.PossibleChanges.Okno, 0x31);
+            else
+                _serialConnection.SendCommand(SerialConnection.PossibleChanges.Okno, 0x30);
+            SendChange();
+        }
+        public void ChangeFan()
+        {
+            ActualSettings.Heating = !ActualSettings.Heating;
+            if (ActualSettings.Heating)
+                _serialConnection.SendCommand(SerialConnection.PossibleChanges.Ventilace, 0x31);
+            else
+                _serialConnection.SendCommand(SerialConnection.PossibleChanges.Ventilace, 0x30);
+            SendChange();
+        }
 
         private ReceivedParameters GetDataFromString(List<string> Data)
         {
@@ -231,9 +249,9 @@ namespace Team15.Model
             TemperatureMax = temperatureMax;
             AirConditioningMin = airConditioningMin;
             AirConditioningMax = airConditioningMax;
-            Windows = false;
-            Heating = false;
-            Venting = false;
+            Windows = windows;
+            Heating = heating;
+            Venting = venting;
         }
 
         public Settings() { }

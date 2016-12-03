@@ -8,7 +8,7 @@ export class Settings {
   minimalni_vlhkost: number;
   otevreni_oken: number;
   zapnuti_topeni: number;
-  otevreni_okenText: string;
+  otevreni_okenText: string ="tea";
   zapnuti_topeniText: string;
 
   public changeToWords() {

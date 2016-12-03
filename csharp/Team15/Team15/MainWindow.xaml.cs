@@ -43,6 +43,9 @@ namespace Team15
                 core.OnDisconnect = () => { OnDisconnestEvent(); };
                 FindButton.Visibility = Visibility.Hidden;
                 MainGrid.Visibility = Visibility.Visible;
+                Topeni.Visibility = Visibility.Visible;
+                Okna.Visibility = Visibility.Visible;
+                Ventilace.Visibility = Visibility.Visible;
                 TemperatureMaxTextBlock.Text = core.ActualSettings.TemperatureMax.ToString();
                 TemperatureMinTextBlock.Text = core.ActualSettings.TemperatureMin.ToString();
                 WetnessMaxTextBlock.Text = core.ActualSettings.AirConditioningMax.ToString();
@@ -76,6 +79,9 @@ namespace Team15
             }
             PossibleConnectionsGrid.Visibility = Visibility.Hidden;
             MainGrid.Visibility = Visibility.Visible;
+            Topeni.Visibility = Visibility.Visible;
+            Okna.Visibility = Visibility.Visible;
+            Ventilace.Visibility = Visibility.Visible;
         }
 
         private void CompleteSettingsButton_Click(object sender, RoutedEventArgs e)
@@ -88,6 +94,21 @@ namespace Team15
             //to co se stane při odpojení
             MainGrid.Visibility = Visibility.Hidden;
             FindButton.Visibility = Visibility.Visible;
+        }
+
+        private void Topeni_Click(object sender, RoutedEventArgs e)
+        {
+            core.ChangeHeat();
+        }
+
+        private void Okno_Click(object sender, RoutedEventArgs e)
+        {
+            core.ChangeWindow();
+        }
+
+        private void Vetrak_Click(object sender, RoutedEventArgs e)
+        {
+            core.ChangeFan();
         }
     }
 }

@@ -72,6 +72,7 @@
                 <StackPanel Orientation="Horizontal">
                     <TextBlock VerticalAlignment="Center" TextWrapping="Wrap" Text="Teplota max" FontSize="20" Width="220"/>
                     <TextBox x:Name="TemperatureMaxTextBlock" Width="40" VerticalAlignment="Center"/>
+                    
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Grid.Row="1">
                     <TextBlock VerticalAlignment="Center" TextWrapping="Wrap" Text="Teplota low" FontSize="20" Width="220"/>
@@ -88,5 +89,8 @@
             </Grid>
             <Button x:Name="CompleteSettingsButton" Content="Nastavit" Grid.Column="2" Grid.Row="5" Click="CompleteSettingsButton_Click"/>
         </Grid>
+        <Button x:Name="Topeni" Content="Topení" Width="30" Height="30" Click="Topeni_Click" Margin="350, -100, 0, 0" Grid.ColumnSpan="2" Visibility="Hidden"/>
+        <Button x:Name="Okna" Content="Okna" Width="30" Height="30" Click="Okno_Click" Margin="350, 0, 0, 0" Grid.RowSpan="2" Grid.ColumnSpan="2" Visibility="Hidden"/>
+        <Button x:Name="Ventilace" Content="Ventilace" Width="30" Height="30" Click="Vetrak_Click" Margin="350, 100, 0, 0" Grid.RowSpan="3" Grid.ColumnSpan="2" Visibility="Hidden"/>
     </Grid>
 </Window>
