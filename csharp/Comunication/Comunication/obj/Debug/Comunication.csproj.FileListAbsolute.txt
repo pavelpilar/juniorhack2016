@@ -2,4 +2,3 @@ C:\Users\Michal\Documents\Visual Studio 2015\Projects\Comunication\Comunication\
 C:\Users\Michal\Documents\Visual Studio 2015\Projects\Comunication\Comunication\bin\Debug\Comunication.pdb
 C:\Users\Michal\Documents\Visual Studio 2015\Projects\Comunication\Comunication\obj\Debug\Comunication.dll
 C:\Users\Michal\Documents\Visual Studio 2015\Projects\Comunication\Comunication\obj\Debug\Comunication.pdb
-C:\Users\Michal\Documents\Visual Studio 2015\Projects\Comunication\Comunication\obj\Debug\Comunication.csprojResolveAssemblyReference.cache

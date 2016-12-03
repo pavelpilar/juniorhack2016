@@ -40,18 +40,10 @@ namespace Team15.Model
                     try
                     {
                         byte[] updateData = _serialConnection.ReceiveData();
-                        if (updateData[0] == 1)
-                        {
-                            Temperature = updateData[1];
-                        }
-                        else if (updateData[0] == 2)
-                        {
-                            DayTime = updateData[2];
-                        }
-                        if (Temperature != 0)
-                        {
-                            _databaseCommunication.UpdateData(Temperature, DayTime);
-                        }
+                        Temperature = updateData[0];
+                        DayTime = updateData[1];
+                        Console.WriteLine("Sending: " + Temperature + ":" + DayTime);
+                        _databaseCommunication.UpdateData(Temperature, DayTime);
                     }
                     catch
                     {
@@ -62,35 +54,38 @@ namespace Team15.Model
                     {
                         RP = GetDataFromString(_databaseCommunication.GetData());
                     }
-                    catch (Exception e)
+                    catch
                     {
-                        Console.WriteLine(e);
                         Thread.Sleep(1000);
                         continue;
                     }
                     if (RP.Heat <= ActualSettings.TemperatureMin)
                     {
+                        Console.WriteLine("Teplota moc nízká");
                         if (!ActualSettings.Heating)
                             //Teplota moc nízká
                             _serialConnection.SendCommand(SerialConnection.PossibleChanges.Topeni, 1);
                     }
                     else if (RP.Heat >= ActualSettings.TemperatureMax)
                     {
+                        Console.WriteLine("Teplota moc vysoká");
                         if (ActualSettings.Heating)
                             //Teplota moc vysoká
                             _serialConnection.SendCommand(SerialConnection.PossibleChanges.Topeni, 0);
                     }
                     if (RP.AirConditioning <= ActualSettings.AirConditioningMin)
                     {
+                        Console.WriteLine("Vlhkost moc nízká");
                         if (ActualSettings.Windows)
                             //Vlhkost vzduchu moc nízká (dlouho otevřené okno)
-                            _serialConnection.SendCommand(SerialConnection.PossibleChanges.Okno, 0);
+                            ;// _serialConnection.SendCommand(SerialConnection.PossibleChanges.Okno, 0);
                     }
                     else if (RP.AirConditioning >= ActualSettings.AirConditioningMax)
                     {
+                        Console.WriteLine("Vlhkost moc vysoká");
                         if (!ActualSettings.Windows)
                             //Vlhkost vzduchu moc vysoká (dlouho zavřené okno)
-                            _serialConnection.SendCommand(SerialConnection.PossibleChanges.Okno, 1);
+                            ;// _serialConnection.SendCommand(SerialConnection.PossibleChanges.Okno, 1);
                     }
                     else
                     {
@@ -102,7 +97,6 @@ namespace Team15.Model
                             }
                         }
                     }
-                    _databaseCommunication.UpdateData(10, 40);
                     Thread.Sleep(1000);
                 }
             });
@@ -139,19 +133,7 @@ namespace Team15.Model
         private void SetSettingsFromList(List<string> Data)
         {
             Console.WriteLine(Data.Count);
-            string[] Split = Data[2].Split(':');
-            int TemperatureMax = int.Parse(Split[1]);
-            Split = Data[3].Split(':');
-            int TemperatureMin = int.Parse(Split[1]);
-            Split = Data[4].Split(':');
-            int AirConditioningMax = int.Parse(Split[1]);
-            Split = Data[5].Split(':');
-            int AirConditioningMin = int.Parse(Split[1]);
-            Split = Data[6].Split(':');
-            bool Windows = int.Parse(Split[1]) == 1;
-            Split = Data[7].Split(':');
-            bool Heating = int.Parse(Split[1]) == 1;
-            ActualSettings = new Settings(TemperatureMin, TemperatureMax, AirConditioningMin, AirConditioningMax, Windows, Heating);
+            ActualSettings = new Settings(FindNumber(Data[2]), FindNumber(Data[3]), FindNumber(Data[4]), FindNumber(Data[5]), FindNumber(Data[6]) == 1, FindNumber(Data[7]) == 1);
         }
         private int FindNumber(string s)
         {

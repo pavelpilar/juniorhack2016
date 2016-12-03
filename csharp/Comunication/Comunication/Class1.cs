@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using System.IO.Ports;
 using System.IO;
 using System.Net;
-using System.Xml.Serialization;
 
 namespace Comunication
 {
@@ -45,6 +44,9 @@ namespace Comunication
             if (!Port.IsOpen)
             {
                 Port.PortName = PortName;
+                Port.Parity = Parity.None;
+                Port.StopBits = StopBits.One;
+                Port.DataBits = 8;
                 try
                 {
                     Port.Open();
@@ -120,30 +122,29 @@ namespace Comunication
         }
         public List<string> GetData()
         {
+            HttpWebRequest GetDataRequest = (HttpWebRequest)HttpWebRequest.Create(Url + GetString);
+            GetDataRequest.KeepAlive = false;
+            GetDataRequest.Timeout = 10000;
             List<string> Ret = new List<string>();
-            Console.WriteLine("Creating Request");
-            WebRequest Req = WebRequest.Create(Url + GetString);
-            Console.WriteLine("Getting Response");
-            WebResponse Res = Req.GetResponse();
-            Console.WriteLine("Creating SR");
+            HttpWebResponse Res = (HttpWebResponse)GetDataRequest.GetResponse();
             StreamReader SR = new StreamReader(Res.GetResponseStream());
             string Line;
-            Console.WriteLine("Reading Data");
             while ((Line = SR.ReadLine()) != null)
             {
                 Ret.Add(Line);
                 if (Line[0] == ']')
                     break;
             }
-            Console.WriteLine("Closing Stream");
             SR.Close();
+            Res.Dispose();
             return Ret;
         }
         public List<string> GetSettings()
         {
             List<string> Ret = new List<string>();
-            WebRequest Req = WebRequest.Create(Url + GetSettingString);
-            WebResponse Res = Req.GetResponse();
+            HttpWebRequest Req = (HttpWebRequest)HttpWebRequest.Create(Url + GetSettingString);
+            Req.Timeout = System.Threading.Timeout.Infinite;
+            HttpWebResponse Res = (HttpWebResponse)Req.GetResponse();
             StreamReader SR = new StreamReader(Res.GetResponseStream());
             string Line;
             while((Line = SR.ReadLine()) != null)
@@ -153,19 +154,21 @@ namespace Comunication
                     break;
             }
             SR.Close();
+            Res.Dispose();
             return Ret;
         }
         public void UpdateSettings(int TempMin, int TempMax, int WetnMin, int WetnMax, int Windows, int Heating)
         {
+            Console.WriteLine("Updating");
             string c = String.Format("{0}nastaveni?key={1}&nid={2}&maxtmp={3}&mintmp={4}&maxvum={5}&minvum={6}&topeni={7}&okna={8}", Url, "t4m15", 1, TempMax, TempMin, WetnMax, WetnMin, Heating, Windows);
-            WebRequest WR = WebRequest.Create(c);
-            WR.GetResponse();
+            HttpWebRequest WR = (HttpWebRequest)HttpWebRequest.Create(c);
+            WR.GetResponse().Dispose();
         }
         public void UpdateData(byte temperature, byte day)
         {
             string UpdateUrl = String.Format("{0}pridat?key=t4m15&sid={1}&tmp={2}&lum={3}", Url, "output", temperature, day);
-            WebRequest WR = WebRequest.Create(UpdateUrl);
-            WR.GetResponse();
+            HttpWebRequest WR = (HttpWebRequest)HttpWebRequest.Create(UpdateUrl);
+            WR.GetResponse().Dispose();
         }
     }
 }
