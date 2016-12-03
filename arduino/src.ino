@@ -23,7 +23,7 @@ Servo servo;
  /*
   * Light-A1
   * Heat-D8
-  * Servo-D9
+  * Servo-D9     
   * Ventilation-D10
   * Window Button-D13
   */
@@ -45,7 +45,7 @@ void setup()
   servo.attach(9);
   servo.write(80);
   
-  Serial.begin(9600);
+  Serial.begin(115200);
   Serial.setTimeout(1500);
   sendTimer = millis();
   pinMode(2, OUTPUT);
@@ -98,14 +98,10 @@ void loop()
 
   if(Serial.available()) {
     byte bytes[2];
-    Serial.println();
-   Serial.println(Serial.readBytes(bytes, 2));
+    Serial.readBytes(bytes, 2);
     
-   bytes[0] = bytes[0]-0x30;
-     bytes[1] = bytes[1]-0x30;
-
-     Serial.println(bytes[0]);
-    Serial.println(bytes[1]);
+    bytes[0] = bytes[0]-0x30;
+    bytes[1] = bytes[1]-0x30;
     
     switch(bytes[0]) {
       case 0: //Window
@@ -134,11 +130,8 @@ void loop()
 
   if(millis() - sendTimer >= 4000) {
     sendTimer = millis();
-    Serial.print(0);  //temp
-    Serial.print(temp);
-
-    Serial.print(1);
-    Serial.print(light < 600 ? 0 : 1);
+    Serial.write(temp);
+    Serial.write(light < 600 ? 0 : 1);
   }
 
   if(windowState == 1)

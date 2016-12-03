@@ -8,6 +8,9 @@ import {DataService} from "./app.service";
 import './rxjs-operators';
 import {forEach} from "@angular/router/src/utils/collection";
 
+import {Observable} from 'rxjs/Rx';
+import {Settings} from "./model/Settings";
+
 
 @Component({
   moduleId: module.id,
@@ -21,25 +24,42 @@ export class HomeComponent implements OnInit{
 
   private boxOne: string ="Interior";
   private boxTwo: string ="Exterior";
-  private boxThree: string ="History";
+  private boxThree: string ="Settings";
   private boxFour: string = "Settings";
 
-  private interiorDevice: Device;
-  public devices: Device[];
-  public interier: Device[];
-  //public exterior: Device = {id_senzoru: "temp", teplota: "28", vlhkost: "25", datum: new Date()};
+  private exteriorDevice: Device[];
+  private devices: Device[];
+  private interior: Device[];
+  private settings: Settings[];
+
 
   errorMessage: string;
 
 
 
+
   constructor(private dataService: DataService){
+
   }
 
   ngOnInit():void {
     this.getData();
-    this.getLastDeviceInterior()
+    this.get();
+    this.getOutDevice();
+    this.getSetings();
+
+
+
+
   }
+  autoloader():void {
+    function myFunction() {
+      setInterval(function () {
+        alert("Hello");
+      }, 3000);
+    }
+  }
+
   getData()
   {
     this.dataService.getDevices().subscribe( devices => this.devices = devices,
@@ -47,9 +67,32 @@ export class HomeComponent implements OnInit{
   }
   getLastDeviceInterior()
   {
-    this.dataService.getLastItem().subscribe( device => this.interier = device,
+    this.dataService.getLastItem().subscribe( device => this.interior = device,
       error =>  this.errorMessage = <any>error);
   }
+  getOutDevice(){
+    this.dataService.getOutDevices().subscribe( devices => this.exteriorDevice = devices,
+      error =>  this.errorMessage = <any>error);
+
+  }
+  getTest(){
+
+  }
+  getSetings() {
+    this.dataService.getOutSettings().subscribe(settings => this.settings = settings,
+      error => this.errorMessage = <any>error);
+  }
+
+    get()
+    {
+      setInterval(() => {
+        this.dataService.getLastItem().subscribe( device => this.interior = device,
+          error =>  this.errorMessage = <any>error);
+      }, 100);
+    }
+
+
+
 
 
 

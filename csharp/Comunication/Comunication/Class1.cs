@@ -24,9 +24,9 @@ namespace Comunication
 
         public enum PossibleChanges
         {
-            Okno,
-            Ventilace,
-            Topeni
+            Okno = 0x30,
+            Ventilace = 0x31,
+            Topeni = 0x32
         }
 
         public SerialConnection()
@@ -79,6 +79,7 @@ namespace Comunication
                 byte[] Buffer = new byte[2];
                 Buffer[0] = (byte)Prvek;
                 Buffer[1] = Hodnota;
+                Console.WriteLine(Buffer[0] + ":" + Buffer[1]);
                 stream.Write(Buffer, 0, Buffer.Length);
                 stream.Flush();
             }
@@ -159,7 +160,6 @@ namespace Comunication
         }
         public void UpdateSettings(int TempMin, int TempMax, int WetnMin, int WetnMax, int Windows, int Heating)
         {
-            Console.WriteLine("Updating");
             string c = String.Format("{0}nastaveni?key={1}&nid={2}&maxtmp={3}&mintmp={4}&maxvum={5}&minvum={6}&topeni={7}&okna={8}", Url, "t4m15", 1, TempMax, TempMin, WetnMax, WetnMin, Heating, Windows);
             HttpWebRequest WR = (HttpWebRequest)HttpWebRequest.Create(c);
             WR.GetResponse().Dispose();

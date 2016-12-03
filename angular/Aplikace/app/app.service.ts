@@ -7,6 +7,7 @@ import {Injectable} from "@angular/core";
 import {Http, Response} from "@angular/http";
 import { Observable }     from 'rxjs/Observable';
 import {Device} from "./model/Device";
+import {Settings} from "./model/Settings";
 @Injectable()
 
 export class DataService {
@@ -22,6 +23,20 @@ export class DataService {
   }
   getLastItem(): Observable<Device[]> {
     this.deviceUrl ='http://tymc15.jecool.net/www/api/vyber?key=t4m15&pocet=1';
+    return this.http.get(this.deviceUrl)
+      .map(this.extractData)
+      .catch(this.handleError);
+
+  }
+  getOutDevices(): Observable<Device[]> {
+    this.deviceUrl ='http://tymc15.jecool.net/www/api/venkovni?key=t4m15';
+    return this.http.get(this.deviceUrl)
+      .map(this.extractData)
+      .catch(this.handleError);
+  }
+
+  getOutSettings(): Observable<Settings[]> {
+    this.deviceUrl ='http://tymc15.jecool.net/www/api/nastaveni?key=t4m15&volba=1&nid=1';
     return this.http.get(this.deviceUrl)
       .map(this.extractData)
       .catch(this.handleError);

@@ -8,8 +8,4 @@ export class Device {
  vlhkost: string;
  datum: Date;
 
-
-
-
-
 }

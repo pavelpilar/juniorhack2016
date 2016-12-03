@@ -1,11 +1,11 @@
 <div class="home-page row">
   <div class="col-md-4 col-sm-12">
     <div class="home-box">
-      <div *ngFor="let device of interier" class="desc">
+      <div *ngFor="let device of interior" class="desc">
         <h2>{{boxOne}}</h2>
         <div>Actual averange temperature: {{device.teplota}} °C</div>
         <div>Actual averange wetness: {{device.vlhkost}} %</div>
-        <div>Date: {{device.datum |date:"dd/MM/yy"}}</div>
+        <div>Date: {{device.datum |date:"ss/dd/MM/yy"}}</div>
       </div>
 
       <button type="button" routerLink="/interior" class="btn btn-primary center">More Information</button>
@@ -15,32 +15,36 @@
 
   </div>
 
-<!---
+
   <div class="col-md-4 col-sm-12">
     <div class="home-box">
-      <div class="desc">
+      <div *ngFor="let device of exteriorDevice" class="desc">
         <h2>{{boxTwo}}</h2>
-        <div>Actual temperature: {{exteriorDevice.teplota}} °C</div>
-        <div>Actual wetness: {{exteriorDevice.vlhkost}} %</div>
+        <div>Actual averange temperature: {{device.teplota}} °C</div>
+        <div>Actual averange wetness: {{device.vlhkost}} %</div>
+        <div>Date: {{device.datum |date:"ss/dd/MM/yy"}}</div>
       </div>
       <button type="button" routerLink="/exterior" class="btn btn-primary">More Information</button>
     </div>
-
-  </div>-->
+  </div>
 
   <div class="col-md-4 col-sm-12">
     <div class="home-box">
-      <div class="desc">
+      <div *ngFor="let sett of settings" class="desc">
         <h2>{{boxThree}}</h2>
-        <div>Last changes:</div>
+        <div>Max Temperature: {{sett.maximalni_teplota}} °C</div>
+        <div>Min Temperature: {{sett.minimalni_teplota}} %</div>
+        <div>Max Temperature: {{sett.maximalni_vlhkost}} °C</div>
+        <div>Min Temperature: {{sett.minimalni_vlhkost}} %</div>
+        <div>Open Window: {{sett.otevreni_oken}}</div>
+        <div>Tourn on heating: {{sett.zapnuti_topeni}} </div>
+
       </div>
-      <button type="button" routerLink="/interior" class="btn btn-primary">More Information</button>
-    </div>
   </div>
   <div class="col-sm-12">
     <div class="home-box">
       <div class="desc">
-        <h2>{{boxThree}}</h2>
+        <h2>{{boxFour}}</h2>
         <div>Last changes:</div>
       </div>
       <button type="button" routerLink="/interior" class="btn btn-primary">More Information</button>
