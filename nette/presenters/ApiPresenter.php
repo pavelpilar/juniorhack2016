@@ -63,11 +63,4 @@ class ApiPresenter extends Nette\Application\UI\Presenter
     {
         echo "Přístup odepřen!";
     }
-
-    /*
-    private function ziskatZaznamy($pocet) {
-        if (is_numeric($pocet))
-            return $pocet;
-        return "Hodnota parametru není číselná!";
-    }*/
 }

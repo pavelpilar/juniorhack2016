@@ -104,6 +104,12 @@ namespace Comunication
                 Disconected();
             }
         }
+        public byte[] ReceiveData()
+        {
+            byte[] buffer = new byte[2];
+            stream.Read(buffer, 0, 2);
+            return buffer;
+        }
         public bool SendCheckByte()
         {
             try
@@ -123,15 +129,27 @@ namespace Comunication
     {
         private string Url;
         private string GetString;
+        private string GetSettingString;
         private string SetStringType;
         private string SetStringValue;
+
+        public enum SettingParameters
+        {
+            TemperatureMin,
+            TemperatureMax,
+            AirConditionMin,
+            AirConditionMax,
+            Window,
+            Heating
+        }
 
         public DatabaseCommunication()
         {
             Url = "http://tymc15.jecool.net/www/api/";
             GetString = "vyber?key=t4m15&pocet=1";
+            GetSettingString = "";
             SetStringType = "";
-            SetStringValue = "";
+            SetStringValue = "=";
         }
         public List<string> GetData()
         {
@@ -149,35 +167,29 @@ namespace Comunication
             SR.Close();
             return Ret;
         }
-        public void UpdateHouseData(string Prvek, int Hodnota)
+        public List<string> GetSettings()
         {
-            WebRequest Req = WebRequest.Create(Url + SetStringType + Prvek + SetStringValue + Hodnota);
-        }
-    }
-    public class HouseSettings<T>
-    {
-        private string Path;
-        private XmlSerializer Serializer;
-        public HouseSettings()
-        {
-            Path = Environment.ExpandEnvironmentVariables("%appdata%/Team15/Config.Bin");
-            Serializer = new XmlSerializer(typeof(T));
-        }
-        public T LoadSettings()
-        {
-            if (!File.Exists(Path))
-                throw new Exception("Soubor s nastavením nebyl nalezen");
-            using (FileStream FS = new FileStream(Path, FileMode.Open))
+            List<string> Ret = new List<string>();
+            WebRequest Req = WebRequest.Create(Url + GetSettingString);
+            WebResponse Res = Req.GetResponse();
+            StreamReader SR = new StreamReader(Res.GetResponseStream());
+            string Line;
+            while((Line = SR.ReadLine()) != null)
             {
-                return (T)Serializer.Deserialize(FS);
+                Ret.Add(Line);
+                if (Line[0] == ']')
+                    break;
             }
+            SR.Close();
+            return Ret;
         }
-        public void SaveSetting(T ob)
+        public void UpdateSettings(SettingParameters Parameter, int value)
         {
-            using (FileStream FS = new FileStream(Path, FileMode.OpenOrCreate))
-            {
-                Serializer.Serialize(FS, ob);
-            }
+            WebRequest.Create(Url + SetStringType + Parameter + SetStringValue + value);
+        }
+        public void UpdateData(byte temperature, byte condiction)
+        {
+            string UpdateUrl = String.Format("{0}pridat?key=t4m15&sid={1}&tmp={2}&vum={3}", Url, "TestujemeTO1", temperature, condiction);
         }
     }
 }

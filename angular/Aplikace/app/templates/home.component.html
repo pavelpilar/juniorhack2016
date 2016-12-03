@@ -3,8 +3,8 @@
     <div class="home-box">
       <div class="desc">
         <h2>{{boxOne}}</h2>
-        <div>Actual averange temperature: {{interiorDevice.getTemperature()}} °C</div>
-        <div>Actual averange wetness: {{interiorDevice.getWetness()}} %</div>
+        <div>Actual averange temperature: {{interiorDevice.teplota}} °C</div>
+        <div>Actual averange wetness: {{interiorDevice.vlhkost}} %</div>
       </div>
 
       <button type="button" routerLink="/interior" class="btn btn-primary center">More Information</button>
@@ -19,8 +19,8 @@
     <div class="home-box">
       <div class="desc">
         <h2>{{boxTwo}}</h2>
-        <div>Actual temperature: {{exteriorDevice.getTemperature()}} °C</div>
-        <div>Actual wetness: {{exteriorDevice.getWetness()}} %</div>
+        <div>Actual temperature: {{exteriorDevice.teplota}} °C</div>
+        <div>Actual wetness: {{exteriorDevice.vlhkost}} %</div>
       </div>
       <button type="button" routerLink="/exterior" class="btn btn-primary">More Information</button>
     </div>

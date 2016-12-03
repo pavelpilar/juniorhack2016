@@ -36,7 +36,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Comunication">
-      <HintPath>Liberies\Comunication.dll</HintPath>
+      <HintPath>..\..\Comunication\Comunication\bin\Debug\Comunication.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />

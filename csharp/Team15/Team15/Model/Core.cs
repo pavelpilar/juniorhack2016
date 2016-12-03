@@ -16,15 +16,10 @@ namespace Team15.Model
 
         private SerialConnection _serialConnection;
         private DatabaseCommunication _databaseCommunication;
-        private HouseSettings<Settings> _houseSettings;
 
         public Core()
         {
-            try
-            {
-                ActualSettings = _houseSettings.LoadSettings();
-            }
-            catch {}
+            SetSettingsFromList(_databaseCommunication.GetSettings());
         }
 
         public string[] FindPossibleConections()
@@ -37,6 +32,7 @@ namespace Team15.Model
             _serialConnection.StartCommunication(port);
             Thread server = new Thread(() =>
             {
+                byte[] updateData = _serialConnection.ReceiveData;
                 ReceivedParameters RP = GetDataFromString(_databaseCommunication.GetData());
                 if (RP.Heat <= ActualSettings.TemperatureMin)
                 {
@@ -64,13 +60,13 @@ namespace Team15.Model
                 }
                 else
                 {
-                    /*if (!_serialConnestion.SendCheckByte())
+                    if (!_serialConnestion.SendCheckByte())
                     {
                         if(OnDisconnect != null)
                         {
                             OnDisconnect();
                         }
-                    }*/
+                    }
                 }
                 Thread.Sleep(1000);
             });
@@ -79,16 +75,33 @@ namespace Team15.Model
         public void NewSettings(Settings settings)
         {
             ActualSettings = settings;
-            _houseSettings.SaveSetting(settings);
         }
 
         private ReceivedParameters GetDataFromString(List<string> Data)
         {
             string[] Split = Data[3].Split('"');
-            float Temperature = float.Parse(Split[3].Replace('.', ','));
+            int Temperature = int.Parse(Split[3].Split('.')[0]);
             Split = Data[4].Split('"');
-            float Conditioning = float.Parse(Split[3].Replace('.', ','));
+            int Conditioning = int.Parse(Split[3].Split('.')[0]);
             return new ReceivedParameters();
+        }
+
+        private void SetSettingsFromList(List<string> Data)
+        {
+            string[] Split = Data[3].Split('"');
+
+            int TemperatureMin = int.Parse(Split[3].Split('.')[0]);
+            Split = Data[4].Split('"');
+            int TemperatureMax = int.Parse(Split[3].Split('.')[0]);
+            Split = Data[5].Split('"');
+            int AirConditioningMin = int.Parse(Split[3].Split('.')[0]);
+            Split = Data[6].Split('"');
+            int AirConditioningMax = int.Parse(Split[3].Split('.')[0]);
+            Split = Data[7].Split('"');
+            bool Windows = int.Parse(Split[3].Split('.')[0]) == 1;
+            Split = Data[8].Split('"');
+            bool Heating = int.Parse(Split[3].Split('.')[0]) == 1;
+            ActualSettings = new Settings(TemperatureMin, TemperatureMax, AirConditioningMin, AirConditioningMax, Windows, Heating);
         }
     }
 

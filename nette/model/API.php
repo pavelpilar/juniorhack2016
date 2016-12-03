@@ -44,12 +44,14 @@ class API {
     }
 
     public function vybratZaznamy() {
+        header("Content-Type: application/json; charset=utf-8");
+        header("Access-Control-Allow-Origin: *");
         $fpocet = ($this->pocet) ? $this->pocet : 3;
         $vratit = $this->database->table("hodnoty")->order("id DESC LIMIT ".$fpocet);
 
         $result = [];
         foreach ($vratit as $zaznam){
-            $namereno = array("id_senzoru" => $zaznam->id_senzoru, "teplota" => $zaznam->teplota,  "vlhkost" => $zaznam->vlhkost);
+            $namereno = array("id_senzoru" => $zaznam->id_senzoru, "teplota" => $zaznam->teplota,  "vlhkost" => $zaznam->vlhkost, "datum" => $zaznam->datum);
             array_push($result, $namereno);
         }
 

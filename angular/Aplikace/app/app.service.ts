@@ -5,13 +5,13 @@
 
 import {Injectable} from "@angular/core";
 import {Http, Response} from "@angular/http";
-import {Observable} from "rxjs";
+import { Observable }     from 'rxjs/Observable';
 import {Device} from "./model/Device";
 @Injectable()
 
 export class DataService {
 
-  private deviceUrl = 'http://tymc15.jecool.net/www/api/?key=t4m15';  // URL to web API
+  private deviceUrl = 'http://tymc15.jecool.net/www/api/vyber?key=t4m15&pocet=30';  // URL to web API
 
   constructor (private http: Http) {}
 
@@ -20,10 +20,17 @@ export class DataService {
       .map(this.extractData)
       .catch(this.handleError);
   }
+  getLastItem(): Observable<Device> {
+    this.deviceUrl ='http://tymc15.jecool.net/www/api/vyber?key=t4m15&pocet=1';
+    return this.http.get(this.deviceUrl)
+      .map(this.extractData)
+      .catch(this.handleError);
+  }
 
   private extractData(res: Response) {
     let body = res.json();
-    return body.data || { };
+
+    return body;
   }
 
   private handleError (error: Response | any) {

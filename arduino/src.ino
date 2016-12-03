@@ -5,7 +5,8 @@ extern uint8_t SmallFont[];
 
 int lastY;
 int lastLight;
-int sendTimer;
+unsigned long sendTimer;
+int windowState = 0;
 
 UTFT myGLCD(ITDB18SP,6,7,3,4,5);    //TFT display
 /*
@@ -23,6 +24,7 @@ Servo servo;
   * Light-A1
   * Heat-D8
   * Servo-D9
+  * Ventilation-D10
   */
 void setup()
 {  
@@ -40,10 +42,13 @@ void setup()
 
   //Servo (window) setup
   servo.attach(9);
+  servo.write(80);
   
   Serial.begin(9600);
+  Serial.setTimeout(1500);
   sendTimer = millis();
   pinMode(8, OUTPUT);
+  pinMode(10, OUTPUT);
 }
 
 void loop()
@@ -81,15 +86,49 @@ void loop()
 
   if(Serial.available()) {
     byte bytes[2];
-    Serial.readBytes(bytes, 2);
+    Serial.println();
+   Serial.println(Serial.readBytes(bytes, 2));
+    
+   bytes[0] = bytes[0]-0x30;
+     bytes[1] = bytes[1]-0x30;
+
+     Serial.println(bytes[0]);
+    Serial.println(bytes[1]);
+    
     switch(bytes[0]) {
-      
+      case 0: //Window
+        if(bytes[1] == 1) {
+          servo.write(40);
+          windowState = 1;
+        } else {
+          servo.write(80);
+          windowState = 0;
+        }
+        break;
+      case 1: //Ventilation
+        if(bytes[1] == 1)
+          digitalWrite(10, HIGH);
+        else
+          digitalWrite(10, LOW);
+        break;
+      case 2: //Heating
+        if(bytes[1] == 1)
+          digitalWrite(8, HIGH);
+        else
+          digitalWrite(8, LOW);
+        break;        
     }
   } 
 
+  
+
   if(millis() - sendTimer >= 4000) {
     sendTimer = millis();
-    
+    Serial.print(0);  //temp
+    Serial.print(temp);
+
+    Serial.print(1);
+    Serial.print(light < 600 ? 0 : 1);
   }
   
   delay(200);
