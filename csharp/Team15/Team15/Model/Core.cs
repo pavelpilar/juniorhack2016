@@ -70,6 +70,7 @@ namespace Team15.Model
                     {
                         if (!ActualSettings.Heating)
                         {
+                            Console.WriteLine("Too cold: " + RP.Heat);
                             //Teplota moc nízká
                             ActualSettings.Heating = true;
                             _serialConnection.SendCommand(SerialConnection.PossibleChanges.Topeni, 0x31);
@@ -77,9 +78,10 @@ namespace Team15.Model
                             {
                                 ActualSettings.Windows = false;
                                 _serialConnection.SendCommand(SerialConnection.PossibleChanges.Okno, 0x30);
-                                ActualSettings.Venting = false;
-                                _serialConnection.SendCommand(SerialConnection.PossibleChanges.Ventilace, 0x30);
+                                ActualSettings.Venting = true;
+                                _serialConnection.SendCommand(SerialConnection.PossibleChanges.Ventilace, 0x31);
                             }
+                            SendChange();
                         }
                     }
                     else if (RP.Heat >= ActualSettings.TemperatureMax)
@@ -87,6 +89,7 @@ namespace Team15.Model
                         if (ActualSettings.Heating)
                         {
                             //Teplota moc vysoká
+                            Console.WriteLine("Too hot: " + RP.Heat);
                             ActualSettings.Heating = false;
                             _serialConnection.SendCommand(SerialConnection.PossibleChanges.Topeni, 0x30);
                             if (ActualSettings.Venting)
@@ -96,10 +99,12 @@ namespace Team15.Model
                                 ActualSettings.Windows = true;
                                 _serialConnection.SendCommand(SerialConnection.PossibleChanges.Okno, 0x31);
                             }
+                            SendChange();
                         }
                     }
                     if (RP.AirConditioning <= ActualSettings.AirConditioningMin)
                     {
+                        Console.WriteLine("Too dry: " + RP.AirConditioning);
                         if (ActualSettings.Windows)
                         {
                             //Vlhkost vzduchu moc nízká (dlouho otevřené okno)
@@ -111,9 +116,12 @@ namespace Team15.Model
                             ActualSettings.Venting = false;
                             _serialConnection.SendCommand(SerialConnection.PossibleChanges.Ventilace, 0x30);
                         }
+                        SendChange();
                     }
                     else if (RP.AirConditioning >= ActualSettings.AirConditioningMax)
                     {
+                        Console.WriteLine("Too wet: " + RP.AirConditioning);
+                        Console.WriteLine("");
                         if (!ActualSettings.Windows && !ActualSettings.Heating)
                         {
                             //Vlhkost vzduchu moc vysoká (dlouho zavřené okno)
@@ -125,6 +133,7 @@ namespace Team15.Model
                             ActualSettings.Venting = true;
                             _serialConnection.SendCommand(SerialConnection.PossibleChanges.Ventilace, 0x31);
                         }
+                        SendChange();
                     }
                     else
                     {
@@ -147,6 +156,12 @@ namespace Team15.Model
             ActualSettings = settings;
             _databaseCommunication.UpdateSettings(ActualSettings.TemperatureMin, ActualSettings.TemperatureMax, ActualSettings.AirConditioningMin, ActualSettings.AirConditioningMax, ActualSettings.Windows ? 1 : 0, ActualSettings.Heating ? 1 : 0);
         }
+
+        public void SendChange()
+        {
+            _databaseCommunication.UpdateSettings(ActualSettings.TemperatureMin, ActualSettings.TemperatureMax, ActualSettings.AirConditioningMin, ActualSettings.AirConditioningMax, ActualSettings.Windows ? 1 : 0, ActualSettings.Heating ? 1 : 0);
+        }
+
 
         private ReceivedParameters GetDataFromString(List<string> Data)
         {

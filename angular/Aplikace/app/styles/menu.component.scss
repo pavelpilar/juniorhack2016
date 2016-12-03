@@ -9,23 +9,27 @@
   .navbar-toggleable-md.collapse {
     text-align: center;
   }
-  .nav-items {
-    width: 56%;
-    margin: auto;
-    display: block;
-    height: 20px;
-    line-height: 20px;
-  }
+
   .navbar-brand{
     float: left;
     padding-top: 0;
     margin: 0 2.5rem 0 0;
+    height: 35px;
+    line-height: 35px;
   }
   .navbar-text {
     padding: 0;
+    height: 35px;
+    line-height: 35px;
+
   }
-
-
-
+}
+@media (max-width: 424px){
+  .navbar-brand, .navbar-text{
+    text-align: center;
+    float: none !important;
+    display: table;
+    margin: 0 auto;
+  }
 }
 

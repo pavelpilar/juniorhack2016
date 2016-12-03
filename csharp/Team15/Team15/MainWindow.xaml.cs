@@ -80,7 +80,7 @@ namespace Team15
 
         private void CompleteSettingsButton_Click(object sender, RoutedEventArgs e)
         {
-            core.NewSettings(new Settings(int.Parse(TemperatureMaxTextBlock.Text), int.Parse(TemperatureMinTextBlock.Text), int.Parse(WetnessMaxTextBlock.Text), int.Parse(WetnessMinTextBlock.Text), core.ActualSettings.Windows, core.ActualSettings.Heating));
+            core.NewSettings(new Settings(int.Parse(TemperatureMaxTextBlock.Text), int.Parse(TemperatureMinTextBlock.Text), int.Parse(WetnessMaxTextBlock.Text), int.Parse(WetnessMinTextBlock.Text), core.ActualSettings.Windows, core.ActualSettings.Heating, core.ActualSettings.Venting));
         }
 
         public void OnDisconnestEvent()

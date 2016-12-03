@@ -3,16 +3,11 @@
     <div class="home-box">
       <div *ngFor="let device of interior" class="desc">
         <h2>{{boxOne}}</h2>
-        <div>Actual averange temperature: {{device.teplota}} °C</div>
-        <div>Actual averange wetness: {{device.vlhkost}} %</div>
+        <div>Actual temperature: {{device.teplota}} °C</div>
+        <div>Actual humidity: {{device.vlhkost}} %</div>
         <div>Date: {{device.datum |date:"ss/dd/MM/yy"}}</div>
       </div>
-
-      <button type="button" routerLink="/interior" class="btn btn-primary center">More Information</button>
-
     </div>
-
-
   </div>
 
 
@@ -20,11 +15,10 @@
     <div class="home-box">
       <div *ngFor="let device of exteriorDevice" class="desc">
         <h2>{{boxTwo}}</h2>
-        <div>Actual averange temperature: {{device.teplota}} °C</div>
-        <div>Actual averange wetness: {{device.vlhkost}} %</div>
+        <div>Actual temperature: {{device.teplota}} °C</div>
+        <div>Actual humidity: {{device.vlhkost}} %</div>
         <div>Date: {{device.datum |date:"ss/dd/MM/yy"}}</div>
       </div>
-      <button type="button" routerLink="/exterior" class="btn btn-primary">More Information</button>
     </div>
   </div>
 
@@ -37,19 +31,8 @@
         <div>Max Temperature: {{sett.maximalni_vlhkost}} °C</div>
         <div>Min Temperature: {{sett.minimalni_vlhkost}} %</div>
         <div>Open Window: {{sett.otevreni_oken}}</div>
-        <div>Tourn on heating: {{sett.zapnuti_topeni}} </div>
-
+        <div>Turn on heating: {{sett.zapnuti_topeni}} </div>
       </div>
   </div>
-  <div class="col-sm-12">
-    <div class="home-box">
-      <div class="desc">
-        <h2>{{boxFour}}</h2>
-        <div>Last changes:</div>
-      </div>
-      <button type="button" routerLink="/interior" class="btn btn-primary">More Information</button>
-    </div>
-  </div>
-
 </div>
 

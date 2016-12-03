@@ -6,9 +6,6 @@ import {Component, OnInit} from "@angular/core";
 import {Device} from "./model/Device";
 import {DataService} from "./app.service";
 import './rxjs-operators';
-import {forEach} from "@angular/router/src/utils/collection";
-
-import {Observable} from 'rxjs/Rx';
 import {Settings} from "./model/Settings";
 
 
@@ -20,11 +17,11 @@ import {Settings} from "./model/Settings";
   styleUrls: ['styles/home.component.scss']
 
 })
-export class HomeComponent implements OnInit{
+export class HomeComponent implements OnInit {
 
-  private boxOne: string ="Interior";
-  private boxTwo: string ="Exterior";
-  private boxThree: string ="Settings";
+  private boxOne: string = "Interior";
+  private boxTwo: string = "Exterior";
+  private boxThree: string = "Settings";
   private boxFour: string = "Settings";
 
   private exteriorDevice: Device[];
@@ -34,66 +31,61 @@ export class HomeComponent implements OnInit{
 
 
   errorMessage: string;
+  private firstTime = true;
 
-
-
-
-  constructor(private dataService: DataService){
-
-  }
-
-  ngOnInit():void {
-    this.getData();
-    this.get();
-    this.getOutDevice();
-    this.getSetings();
-
-
+  constructor(private dataService: DataService ) {
 
 
   }
-  autoloader():void {
-    function myFunction() {
-      setInterval(function () {
-        alert("Hello");
-      }, 3000);
-    }
-  }
 
-  getData()
-  {
-    this.dataService.getDevices().subscribe( devices => this.devices = devices,
-      error =>  this.errorMessage = <any>error);
-  }
-  getLastDeviceInterior()
-  {
-    this.dataService.getLastItem().subscribe( device => this.interior = device,
-      error =>  this.errorMessage = <any>error);
-  }
-  getOutDevice(){
-    this.dataService.getOutDevices().subscribe( devices => this.exteriorDevice = devices,
-      error =>  this.errorMessage = <any>error);
-
-  }
-  getTest(){
-
-  }
-  getSetings() {
-    this.dataService.getOutSettings().subscribe(settings => this.settings = settings,
-      error => this.errorMessage = <any>error);
-  }
-
-    get()
+  ngOnInit(): void {
+    this.getFirstTime();
+    if(this.firstTime == false)
     {
-      setInterval(() => {
-        this.dataService.getLastItem().subscribe( device => this.interior = device,
-          error =>  this.errorMessage = <any>error);
-      }, 100);
+      this.getLastItem();
+      this.getOutDevice();
+      this.getSetings();
     }
 
 
 
+  }
 
+  getFirstTime() {
+    if(this.firstTime == true){
+      this.dataService.getOutSettings().subscribe(settings => this.settings = settings,
+        error => this.errorMessage = <any>error);
+      this.dataService.getOutDevices().subscribe(devices => this.exteriorDevice = devices,
+        error => this.errorMessage = <any>error);
+      this.dataService.getLastItem().subscribe(device => this.interior = device,
+        error => this.errorMessage = <any>error);
+      this.firstTime = false;
+    }
+
+
+}
+
+
+
+  getSetings() {
+    setInterval(() => {
+      this.dataService.getOutSettings().subscribe(settings => this.settings = settings,
+        error => this.errorMessage = <any>error);
+    }, 3000);
+  }
+  getOutDevice() {
+    setInterval(() => {
+      this.dataService.getOutDevices().subscribe(devices => this.exteriorDevice = devices,
+        error => this.errorMessage = <any>error);
+    }, 3000);
+  }
+
+  getLastItem() {
+    setInterval(() => {
+      this.dataService.getLastItem().subscribe(device => this.interior = device,
+        error => this.errorMessage = <any>error);
+    }, 3000);
+  }
 
 
 }
