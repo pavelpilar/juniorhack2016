@@ -72,6 +72,13 @@ class ApiPresenter extends Nette\Application\UI\Presenter
         }
     }
 
+    public function renderMagnet($sec = NULL) {
+        if ($sec && $sec == 2)
+            echo $this->api->ziskatSecurity();
+        else
+            $this->api->pridatSecurity($sec);
+    }
+
     public function renderNastaveni($key = NULL, $nid = NULL, $maxtmp = NULL, $mintmp = NULL, $maxvum = NULL, $minvum = NULL, $topeni = NULL, $okna = NULL, $volba) {
         $this->api->prirazeniParametruNastaveni($key, $nid, $maxtmp, $mintmp, $maxvum, $minvum, $topeni, $okna);
 

@@ -29,6 +29,8 @@ class API {
     private $topeni;
     private $okna;
 
+    private $sec;
+
     public function __construct(Nette\Database\Context $db)
     {
         $this->database = $db;
@@ -63,6 +65,30 @@ class API {
         );
 
         $this->database->table("hodnoty")->insert($data);
+    }
+
+    public function pridatSecurity($sec) {
+        $this->sec = $sec;
+        $data = array(
+            "security" => (!$this->sec) ? "0" : $this->sec
+        );
+
+        $this->database->table("security")->insert($data);
+    }
+
+    public function ziskatSecurity($sec) {
+        header("Content-Type: application/json; charset=utf-8");
+        header("Access-Control-Allow-Origin: *");
+        $vratit = $this->database->table("security")->order("id DESC LIMIT 1");
+
+        $result = [];
+        foreach ($vratit as $zaznam){
+            $namereno = array("security" => $zaznam->security);
+            array_push($result, $namereno);
+        }
+
+        $jsonData = json_encode($result, JSON_PRETTY_PRINT);
+        return $jsonData;
     }
 
     public function vybratZaznamy() {

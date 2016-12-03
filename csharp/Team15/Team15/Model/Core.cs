@@ -68,6 +68,7 @@ namespace Team15.Model
                     }
                     if (RP.Heat <= ActualSettings.TemperatureMin)
                     {
+                        Console.WriteLine(ActualSettings.Heating);
                         if (!ActualSettings.Heating)
                         {
                             Console.WriteLine("Too cold: " + RP.Heat);
@@ -86,6 +87,7 @@ namespace Team15.Model
                     }
                     else if (RP.Heat >= ActualSettings.TemperatureMax)
                     {
+                        Console.WriteLine(ActualSettings.Heating);
                         if (ActualSettings.Heating)
                         {
                             //Teplota moc vysoká
@@ -110,30 +112,31 @@ namespace Team15.Model
                             //Vlhkost vzduchu moc nízká (dlouho otevřené okno)
                             ActualSettings.Windows = false;
                             _serialConnection.SendCommand(SerialConnection.PossibleChanges.Okno, 0x30);
+                            SendChange();
                         }
                         else if (ActualSettings.Venting)
                         {
                             ActualSettings.Venting = false;
                             _serialConnection.SendCommand(SerialConnection.PossibleChanges.Ventilace, 0x30);
+                            SendChange();
                         }
-                        SendChange();
                     }
                     else if (RP.AirConditioning >= ActualSettings.AirConditioningMax)
                     {
                         Console.WriteLine("Too wet: " + RP.AirConditioning);
-                        Console.WriteLine("");
                         if (!ActualSettings.Windows && !ActualSettings.Heating)
                         {
                             //Vlhkost vzduchu moc vysoká (dlouho zavřené okno)
                             ActualSettings.Windows = true;
                             _serialConnection.SendCommand(SerialConnection.PossibleChanges.Okno, 0x31);
+                            SendChange();
                         }
                         else if (!ActualSettings.Venting)
                         {
                             ActualSettings.Venting = true;
                             _serialConnection.SendCommand(SerialConnection.PossibleChanges.Ventilace, 0x31);
+                            SendChange();
                         }
-                        SendChange();
                     }
                     else
                     {
@@ -228,9 +231,9 @@ namespace Team15.Model
             TemperatureMax = temperatureMax;
             AirConditioningMin = airConditioningMin;
             AirConditioningMax = airConditioningMax;
-            Windows = windows;
-            Heating = heating;
-            Venting = venting;
+            Windows = false;
+            Heating = false;
+            Venting = false;
         }
 
         public Settings() { }
