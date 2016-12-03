@@ -74,7 +74,7 @@ namespace Comunication
         {
             if (stream.CanWrite)
             {
-                byte[] Buffer = new byte[3];
+                byte[] Buffer = new byte[2];
                 switch (Prvek)
                 {
                     case PossibleChanges.Okno:
@@ -96,7 +96,6 @@ namespace Comunication
                     default:
                         break;
                 }
-                Buffer[2] = 10;
                 stream.Write(Buffer, 0, Buffer.Length);
                 stream.Flush();
             }
@@ -105,16 +104,18 @@ namespace Comunication
                 Disconected();
             }
         }
-        public void SendCheckByte()
+        public bool SendCheckByte()
         {
             try
             {
                 stream.Write(CheckByte, 0, 1);
                 stream.Flush();
+                return true;
             }
             catch
             {
                 Disconected();
+                return false;
             }
         }
     }
@@ -128,25 +129,25 @@ namespace Comunication
         public DatabaseCommunication()
         {
             Url = "http://tymc15.jecool.net/www/api/";
-            GetString = "?ziskat=5";
+            GetString = "vyber?key=t4m15&pocet=1";
             SetStringType = "";
             SetStringValue = "";
         }
-        public string GetData()
+        public List<string> GetData()
         {
+            List<string> Ret = new List<string>();
             WebRequest Req = WebRequest.Create(Url + GetString);
             WebResponse Res = Req.GetResponse();
             StreamReader SR = new StreamReader(Res.GetResponseStream());
-            string Line = SR.ReadLine();
-            SR.Close();
-            for (int i = 0; i < Line.Length - 1; i++)
+            string Line;
+            while ((Line = SR.ReadLine()) != null)
             {
-                if (Line[i] == '<' && Line[i + 1] == '!')
-                {
-                    return Line.Remove(i, Line.Length - i);
-                }
+                Ret.Add(Line);
+                if (Line[0] == ']')
+                    break;
             }
-            return Line;
+            SR.Close();
+            return Ret;
         }
         public void UpdateHouseData(string Prvek, int Hodnota)
         {

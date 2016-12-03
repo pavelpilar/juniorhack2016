@@ -14,7 +14,7 @@ namespace Team15.Model
         public Action OnDisconnect;
 
 
-        private SerialConnection _serialConnestion;
+        private SerialConnection _serialConnection;
         private DatabaseCommunication _databaseCommunication;
         private HouseSettings<Settings> _houseSettings;
 
@@ -29,20 +29,38 @@ namespace Team15.Model
 
         public string[] FindPossibleConections()
         {
-            return _serialConnestion.GetSerialPorts();
+            return _serialConnection.GetSerialPorts();
         }
 
         public void StartServer(string port, string url)
         {
-            _serialConnestion.StartCommunication(port);
+            _serialConnection.StartCommunication(port);
             Thread server = new Thread(() =>
             {
-                string s = _databaseCommunication.GetData();
-                bool change;
-                /*yolo code co s hodně if*/
-                if (change)
+                ReceivedParameters RP = GetDataFromString(_databaseCommunication.GetData());
+                if (RP.Heat <= ActualSettings.TemperatureMin)
                 {
-                    //_serialConnestion.SendCommand();
+                    if (!ActualSettings.Heating)
+                        //Teplota moc nízká
+                        _serialConnection.SendCommand(SerialConnection.PossibleChanges.Topeni, 1);
+                }
+                else if (RP.Heat >= ActualSettings.TemperatureMax)
+                {
+                    if (ActualSettings.Heating)
+                        //Teplota moc vysoká
+                        _serialConnection.SendCommand(SerialConnection.PossibleChanges.Topeni, 0);
+                }
+                if (RP.AirConditioning <= ActualSettings.AirConditioningMin)
+                {
+                    if (ActualSettings.Windows)
+                        //Vlhkost vzduchu moc nízká (dlouho otevřené okno)
+                        _serialConnection.SendCommand(SerialConnection.PossibleChanges.Okno, 0);
+                }
+                else if (RP.AirConditioning >= ActualSettings.AirConditioningMax)
+                {
+                    if (!ActualSettings.Windows)
+                        //Vlhkost vzduchu moc vysoká (dlouho zavřené okno)
+                        _serialConnection.SendCommand(SerialConnection.PossibleChanges.Okno, 1);
                 }
                 else
                 {
@@ -54,6 +72,7 @@ namespace Team15.Model
                         }
                     }*/
                 }
+                Thread.Sleep(1000);
             });
         }
 
@@ -62,23 +81,53 @@ namespace Team15.Model
             ActualSettings = settings;
             _houseSettings.SaveSetting(settings);
         }
+
+        private ReceivedParameters GetDataFromString(List<string> Data)
+        {
+            string[] Split = Data[3].Split('"');
+            float Temperature = float.Parse(Split[3].Replace('.', ','));
+            Split = Data[4].Split('"');
+            float Conditioning = float.Parse(Split[3].Replace('.', ','));
+            return new ReceivedParameters();
+        }
     }
 
     public class Settings
     {
-        public int Heating { get; set; }
-        public int AirConditioning { get; set; }
-        public int Windows { get; set; }
-        public int Jalousie { get; set; }
+        public int TemperatureMin { get; set; }
+        public int TemperatureMax { get; set; }
+        public int AirConditioningMin { get; set; }
+        public int AirConditioningMax { get; set; }
+        public bool Windows { get; set; }
+        public bool Heating { get; set; }
 
-        public Settings(int heating, int airConditioning, int windows, int jalousie)
+        public Settings(int temperatureMin, int temperatureMax, int airConditioningMin, int airConditioningMax, bool windows, bool heating)
         {
-            Heating = heating;
-            AirConditioning = airConditioning;
+            TemperatureMin = temperatureMin;
+            TemperatureMax = temperatureMax;
+            AirConditioningMin = airConditioningMin;
+            AirConditioningMax = airConditioningMax;
             Windows = windows;
-            Jalousie = jalousie;
+            Heating = heating;
         }
 
         public Settings() { }
+    }
+
+    public class ReceivedParameters
+    {
+        public int Heat { get; set; }
+        public int AirConditioning { get; set; }
+
+        public ReceivedParameters(int heat, int airConditioning)
+        {
+            Heat = heat;
+            AirConditioning = airConditioning;
+        }
+
+        public ReceivedParameters()
+        {
+
+        }
     }
 }

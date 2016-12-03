@@ -57,6 +57,10 @@ class API {
         return $jsonData;
     }
 
+    public function reset() {
+        $this->database->query("TRUNCATE TABLE hodnoty");
+    }
+
     public function overitPristup() {
         if ($this->key && $this->key == "t4m15")
             return true;

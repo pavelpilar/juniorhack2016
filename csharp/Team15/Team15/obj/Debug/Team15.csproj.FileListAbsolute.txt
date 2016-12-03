@@ -12,3 +12,6 @@ C:\Users\Pavel\Desktop\Team15\Team15\obj\Debug\Team15.Properties.Resources.resou
 C:\Users\Pavel\Desktop\Team15\Team15\obj\Debug\Team15.csproj.GenerateResource.Cache
 C:\Users\Pavel\Desktop\Team15\Team15\obj\Debug\Team15.exe
 C:\Users\Pavel\Desktop\Team15\Team15\obj\Debug\Team15.pdb
+C:\Users\Michal\Documents\Visual Studio 2015\Projects\Team15\Team15\bin\Debug\Team15.exe.config
+C:\Users\Michal\Documents\Visual Studio 2015\Projects\Team15\Team15\obj\Debug\Team15.exe
+C:\Users\Michal\Documents\Visual Studio 2015\Projects\Team15\Team15\obj\Debug\Team15.pdb

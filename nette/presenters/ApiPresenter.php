@@ -35,6 +35,15 @@ class ApiPresenter extends Nette\Application\UI\Presenter
 
     public function renderReset($key = NULL, $sid = NULL, $tmp = NULL, $vum = NULL) {
         $this->api->prirazeniParametru($key, $sid, $tmp, $vum);
+
+        // Přístup povolen, key zadán a zadán správně
+        if ($this->api->overitPristup()) {
+            $this->api->reset();
+        }
+        // Nezadán security key, nepovolený přístup
+        else {
+            echo "Přístup odepřen!";
+        }
     }
 
     public function renderVyber($key = NULL, $sid = NULL, $tmp = NULL, $vum = NULL, $pocet = NULL) {

@@ -5,6 +5,7 @@ extern uint8_t SmallFont[];
 
 int lastY;
 int lastLight;
+int sendTimer;
 
 UTFT myGLCD(ITDB18SP,6,7,3,4,5);    //TFT display
 /*
@@ -20,6 +21,7 @@ UTFT myGLCD(ITDB18SP,6,7,3,4,5);    //TFT display
 Servo servo;
  /*
   * Light-A1
+  * Heat-D8
   * Servo-D9
   */
 void setup()
@@ -40,6 +42,8 @@ void setup()
   servo.attach(9);
   
   Serial.begin(9600);
+  sendTimer = millis();
+  pinMode(8, OUTPUT);
 }
 
 void loop()
@@ -65,27 +69,29 @@ void loop()
   //Light
   int light = analogRead(A1);
 
-  if(light < 600)
+  if(light < 600 && lastLight >= 600)
     myGLCD.print("Night", 1, 15);
-  else {
-    if(lastLight < 600) {
+  else if(light >= 600 && lastLight < 600) {
       myGLCD.setColor(0,0,0);
       myGLCD.fillRect(1, 15, 40, 40);
       myGLCD.setColor(255,255,255);
-    }
-    myGLCD.print("Day", 1, 15);
-  }
+      myGLCD.print("Day", 1, 15); 
+  }   
   lastLight = light;
 
   if(Serial.available()) {
-    byte[] bytes = new byte[2];
+    byte bytes[2];
     Serial.readBytes(bytes, 2);
-    switch(bytes[0] {
+    switch(bytes[0]) {
       
     }
-  }
-    
+  } 
 
+  if(millis() - sendTimer >= 4000) {
+    sendTimer = millis();
+    
+  }
+  
   delay(200);
 }
 
