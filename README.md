@@ -1,9 +1,9 @@
 # SmartHome - Team 15
 
-1. Chytré ovládání domu s pokroèilou autizací //Smart control of your home with advenced automation.
-2. Vyuití Andruino senzorù, webového rozhraní, c# serveru //We're using arduino senzors, web interface, c# server
-3. Propojení skrze databázi a sériovı kabel // Connection via sql database and serial cable                              
+1. ChytrÃ© ovlÃ¡dÃ¡nÃ­ domu s pokroÄilou automatizacÃ­ //Smart control of your home with advenced automation.
+2. VyuÅ¾itÃ­ Andruino senzorÅ¯, webovÃ©ho rozhranÃ­, c# serveru //Usage of arduino sensors, web interface, c# server
+3. PropojenÃ­ skrze SQL databÃ¡zi, kabelem a pÅ™es Wi-Fi // Connection via SQL database, cable and Wi-FI                            
 
-*Náš Tım pochází z Liberce //We are from Liberec
+*NÃ¡Å¡ TÃ½m pochÃ¡zÃ­ z Liberce //We are from Liberec
 
 Repository for Junior hackathon 2016 Brno
