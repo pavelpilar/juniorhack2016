@@ -3,10 +3,10 @@
  */
 export class Device {
 
- public id_senzoru:string;
- public teplota:string;
- public vlhkost: string;
- public datum: Date;
+  id_senzoru:string;
+ teplota:string;
+ vlhkost: string;
+ datum: Date;
 
 
 

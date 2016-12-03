@@ -4,7 +4,7 @@ import Alert = webdriver.Alert;
 import {DataService} from "./app.service";
 import {Device} from "./model/Device";
 // Add the RxJS Observable operators.
-import './rxjs-operators';
+
 
 
 @Component({
@@ -15,11 +15,9 @@ import './rxjs-operators';
     <router-outlet></router-outlet>
     <ngbd-alert-closeable [alerts]="alerts"></ngbd-alert-closeable>
     <button class="btn btn-primary" (click)="AddAlert()">Test</button>
-    <ul>
-  <li *ngFor="let device of devices">{{device.id_senzoru}}</li>
-</ul>`,
+    `,
 })
-export class AppComponent implements OnInit{
+export class AppComponent {
   private alerts: Array<IAlert> = [];
 
 
@@ -31,10 +29,7 @@ export class AppComponent implements OnInit{
     this.alerts.push({id:5, message: "test", type: "danger"},{id:5, message: "oajoi", type: "danger"})
 
   }
-  ngOnInit(){
 
-
-  }
 
 
 }

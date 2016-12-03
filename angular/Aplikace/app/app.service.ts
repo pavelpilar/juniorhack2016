@@ -20,16 +20,17 @@ export class DataService {
       .map(this.extractData)
       .catch(this.handleError);
   }
-  getLastItem(): Observable<Device> {
+  getLastItem(): Observable<Device[]> {
     this.deviceUrl ='http://tymc15.jecool.net/www/api/vyber?key=t4m15&pocet=1';
     return this.http.get(this.deviceUrl)
       .map(this.extractData)
       .catch(this.handleError);
+
   }
 
   private extractData(res: Response) {
     let body = res.json();
-
+    console.log(body);
     return body;
   }
 
@@ -43,7 +44,6 @@ export class DataService {
     } else {
       errMsg = error.message ? error.message : error.toString();
     }
-    console.error(errMsg);
     return Observable.throw(errMsg);
   }
 }

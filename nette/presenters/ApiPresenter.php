@@ -59,6 +59,19 @@ class ApiPresenter extends Nette\Application\UI\Presenter
         }
     }
 
+    public function renderVenkovni($key = NULL, $sid = NULL, $tmp = NULL, $vum = NULL, $l = NULL) {
+        $this->api->prirazeniParametru($key, $sid, $tmp, $vum, $l);
+
+        // Přístup povolen, key zadán a zadán správně
+        if ($this->api->overitPristup()) {
+            echo $this->api->getOutDevice();
+        }
+        // Nezadán security key, nepovolený přístup
+        else {
+            echo "Přístup odepřen!";
+        }
+    }
+
     public function renderNastaveni($key = NULL, $nid = NULL, $maxtmp = NULL, $mintmp = NULL, $maxvum = NULL, $minvum = NULL, $topeni = NULL, $okna = NULL) {
         $this->api->prirazeniParametruNastaveni($key, $nid, $maxtmp, $mintmp, $maxvum, $minvum, $topeni, $okna);
 

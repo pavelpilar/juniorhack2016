@@ -35,8 +35,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Comunication">
-      <HintPath>..\..\Comunication\Comunication\bin\Debug\Comunication.dll</HintPath>
+    <Reference Include="Comunication, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Liberies\Comunication.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />

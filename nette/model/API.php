@@ -81,6 +81,21 @@ class API {
         return $jsonData;
     }
 
+    public function getOutDevice() {
+        header("Content-Type: application/json; charset=utf-8");
+        header("Access-Control-Allow-Origin: *");
+        $vratit = $this->database->query("SELECT * FROM hodnoty WHERE id_senzoru = 'output' ORDER BY datum DESC LIMIT 10");
+
+        $result = [];
+        foreach ($vratit as $zaznam){
+            $namereno = array("id_senzoru" => $zaznam->id_senzoru, "teplota" => $zaznam->teplota, "vlhkost" => $zaznam->vlhkost, "datum" => $zaznam->datum);
+            array_push($result, $namereno);
+        }
+
+        $jsonData = json_encode($result, JSON_PRETTY_PRINT);
+        return $jsonData;
+    }
+
     public function reset() {
         $this->database->query("TRUNCATE TABLE hodnoty");
     }

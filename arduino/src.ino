@@ -48,6 +48,7 @@ void setup()
   Serial.begin(9600);
   Serial.setTimeout(1500);
   sendTimer = millis();
+  pinMode(2, OUTPUT);
   pinMode(8, OUTPUT);
   pinMode(10, OUTPUT);
 }
@@ -64,7 +65,6 @@ void loop()
     }
   }
     
-  
   //Temperature
   int temp = (analogRead(A0) * (5000/1024) - 500) / 10 + /* calibration constant */ 2; 
   int newY = 148-(138/50.0*temp);
@@ -75,7 +75,7 @@ void loop()
   if(newY < lastY)
   {
     myGLCD.setColor(0,0,0);
-    myGLCD.fillRect(91, lastY-40, 109, newY);
+    myGLCD.fillRect(91, lastY-70, 109, newY);
     myGLCD.setColor(255, 255, 255);
   } else {
     myGLCD.drawRect(90, 10, 110, 148);  
@@ -140,7 +140,12 @@ void loop()
     Serial.print(1);
     Serial.print(light < 600 ? 0 : 1);
   }
-  
+
+  if(windowState == 1)
+    digitalWrite(2, HIGH);
+  else
+    digitalWrite(2, LOW);
+    
   delay(200);
 
 }

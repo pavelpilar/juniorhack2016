@@ -43,6 +43,10 @@ namespace Team15
                 core.OnDisconnect = () => { OnDisconnestEvent(); };
                 FindButton.Visibility = Visibility.Hidden;
                 MainGrid.Visibility = Visibility.Visible;
+                TemperatureMaxTextBlock.Text = core.ActualSettings.TemperatureMax.ToString();
+                TemperatureMinTextBlock.Text = core.ActualSettings.TemperatureMin.ToString();
+                WetnessMaxTextBlock.Text = core.ActualSettings.AirConditioningMax.ToString();
+                WetnessMinTextBlock.Text = core.ActualSettings.AirConditioningMin.ToString();
             }
             else
             {
@@ -63,21 +67,27 @@ namespace Team15
             else
             {
                 string s = PossibleConestionListBox.SelectedItem as string;
-                core.StartServer(s, "URL(zaim k ničemu)");
+                core.StartServer(s, "URL(zatim k ničemu)");
                 core.OnDisconnect = () => { OnDisconnestEvent(); };
+                TemperatureMaxTextBlock.Text = core.ActualSettings.TemperatureMax.ToString();
+                TemperatureMinTextBlock.Text = core.ActualSettings.TemperatureMin.ToString();
+                WetnessMaxTextBlock.Text = core.ActualSettings.AirConditioningMax.ToString();
+                WetnessMinTextBlock.Text = core.ActualSettings.AirConditioningMin.ToString();
             }
             PossibleConnectionsGrid.Visibility = Visibility.Hidden;
             MainGrid.Visibility = Visibility.Visible;
         }
 
         private void CompleteSettingsButton_Click(object sender, RoutedEventArgs e)
-        {      
-            core.NewSettings()
+        {
+            core.NewSettings(new Settings(int.Parse(TemperatureMinTextBlock.Text), int.Parse(TemperatureMaxTextBlock.Text), int.Parse(WetnessMinTextBlock.Text), int.Parse(WetnessMaxTextBlock.Text), core.ActualSettings.Windows, core.ActualSettings.Heating));
         }
 
         public void OnDisconnestEvent()
         {
             //to co se stane při odpojení
+            MainGrid.Visibility = Visibility.Hidden;
+            FindButton.Visibility = Visibility.Visible;
         }
     }
 }

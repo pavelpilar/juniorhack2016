@@ -37,18 +37,25 @@ namespace Team15.Model
             {
                 for (;;)
                 {
-                    byte[] updateData = _serialConnection.ReceiveData();
-                    if (updateData[0] == 1)
+                    try
                     {
-                        Temperature = updateData[1];
+                        byte[] updateData = _serialConnection.ReceiveData();
+                        if (updateData[0] == 1)
+                        {
+                            Temperature = updateData[1];
+                        }
+                        else if (updateData[0] == 2)
+                        {
+                            DayTime = updateData[2];
+                        }
+                        if (Temperature != 0)
+                        {
+                            _databaseCommunication.UpdateData(Temperature, DayTime);
+                        }
                     }
-                    else if (updateData[0] == 2)
+                    catch
                     {
-                        DayTime = updateData[2];
-                    }
-                    if (Temperature != 0)
-                    {
-                        _databaseCommunication.UpdateData(Temperature, DayTime);
+
                     }
                     ReceivedParameters RP = GetDataFromString(_databaseCommunication.GetData());
                     if (RP.Heat <= ActualSettings.TemperatureMin)
@@ -88,11 +95,13 @@ namespace Team15.Model
                     Thread.Sleep(1000);
                 }
             });
+            server.Start();
         }
 
         public void NewSettings(Settings settings)
         {
             ActualSettings = settings;
+            _databaseCommunication.UpdateSettings(ActualSettings.TemperatureMin, ActualSettings.TemperatureMax, ActualSettings.AirConditioningMin, ActualSettings.AirConditioningMax, ActualSettings.Windows ? 1 : 0, ActualSettings.Heating ? 1 : 0);
         }
 
         private ReceivedParameters GetDataFromString(List<string> Data)
@@ -101,7 +110,7 @@ namespace Team15.Model
             int Temperature = int.Parse(Split[3].Split('.')[0]);
             Split = Data[4].Split('"');
             int Conditioning = int.Parse(Split[3].Split('.')[0]);
-            return new ReceivedParameters();
+            return new ReceivedParameters(Temperature, Conditioning);
         }
 
         private void SetSettingsFromList(List<string> Data)
