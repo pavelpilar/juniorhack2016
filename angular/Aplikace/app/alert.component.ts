@@ -1,13 +1,14 @@
 import {Input, Component, OnInit, OnChanges} from '@angular/core';
 
 @Component({
+  moduleId: module.id,
   selector: 'ngbd-alert-closeable',
-  template: `<p *ngFor="let alert of alerts">
-                <ngb-alert [type]="alert.type" (close)="closeAlert(alert)">{{ alert.message }}</ngb-alert>
+  styleUrls: ['./styles/alert.component.css'],
+  template: `<p *ngFor="let alert of alerts" class="alerts">
+                <ngb-alert [type]="alert.type" [class.smazat]="danger === alert.type" (close)="closeAlert(alert)">{{ alert.message }}</ngb-alert>
             </p>
             `,
-  styles: [`.alert-danger{display: none;}
-.alert-danger:first-of-type{display:block}`],
+
 })
 export class NgbdAlertCloseable {
 
@@ -15,6 +16,8 @@ export class NgbdAlertCloseable {
   public alerts: Array<IAlert> = [];
   public second: Array<IAlert> = [];
   private id: number = 0;
+  private danger ="danger"
+
 
   constructor() {
   this.id = 0;

@@ -1,0 +1,8 @@
+p.alerts:nth-child(1) .smazat{
+  display: block !important;
+}
+
+p.alerts .smazat {
+  display: none;
+}
+
